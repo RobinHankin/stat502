@@ -353,11 +353,17 @@ Question:  Are the events "passing statistics" and "passing physics" independent
 
 Answer: If $S$ and $P$ are independent, we have $p(S\cap P)=p(S)\times p(P)$.  We are told that $p(S\cap P)=0.5$, but $p(S)\times p(P)=0.6\times 0.7=0.42$ which is different.  The events are not dependent.
 
-## Bayes' Theorem
+## Bayes's Theorem
 
-Bayes' theorem, discovered by Reverend Thomas Bayes in 1763, makes use of the conditional probability and has proven useful in probabilistic modelling in many areas such as health science, biology, economics, finance, and astronomy. 
 
-Let $A$ and $B$ are events and $p(B) \neq 0$. Then, Bayes' theorem states that
+
+Bayes's theorem, discovered by Reverend Thomas Bayes in 1763, makes
+use of the conditional probability and has proven useful in
+probabilistic modelling in many areas such as health science, biology,
+economics, finance, and astronomy.
+
+Let $A$ and $B$ are events and $p(B) \neq 0$. Then, Bayes's theorem
+states that
 
 $$
 p(A|B) = \frac{p(B|A)p(A)}{p(B)}
