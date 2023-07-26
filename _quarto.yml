@@ -1,0 +1,28 @@
+project:
+  type: book
+  output-dir: _output_manual  
+
+book:
+  title: STAT502 Introductory Probability and Statistics Course Manual
+  author: "Department of Mathematical Sciences, SECMS"
+  date: ""
+  chapters:
+    - index.qmd
+    - STAT502_Week01_GettingStarted.qmd
+    - STAT502_Week01-02_ProbabilityIntro.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+    pdf-engine: lualatex 
+    papersize: a4
+    include-in-header: header_report.txt
+    include-after-body: after_body_slides.txt  
+
+editor: visual
+
