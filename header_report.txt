@@ -1,0 +1,75 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Add Background Image to Title Page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[firstpage=true]{background}
+\usepackage{float}
+
+\backgroundsetup{
+ scale=1,
+ color=black,
+ opacity=0.4,
+ angle=0,
+ pages=1,
+ contents={
+  \includegraphics[width=\paperwidth,height=\paperheight]{figs/aut_header}
+ }
+ }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fullpage}
+%\usepackage{graphicx}
+%\usepackage{rotating}
+%\setbeamertemplate{caption}[numbered]
+%\usepackage{hyperref}
+%\usepackage{caption}
+%\usepackage[normalem]{ulem}
+%\mode<presentation>
+%\usepackage{wasysym}
+%\usepackage{amsmath}
+
+
+\newcommand{\myimageref}[1]{
+\mode<article>{
+%\begin{minipage}{\textwidth}
+{\footnotesize{\centering Source: #1}}
+%\end{minipage}
+}
+\mode<presentation>{
+%\begin{minipage}{\textwidth}
+{\footnotesize{\centering Source: #1}}
+%\end{minipage}
+\Large
+}
+}
+
+
+\newcommand{\myimage}[6]{
+%1. file path to image
+%2. width for article
+%3. width for beamer
+%4. Caption/Slide Title
+%5. Image ref
+%6. Float Label
+\mode<article>{
+    \begin{figure}[h!]
+      \centering
+      \includegraphics[width=#2]{#1}
+	  ~\\#5
+      \caption{#4}
+	 \label{#6}
+    \end{figure}
+}
+\mode<presentation>{
+    \begin{frame}{#4}
+      \centering
+       \includegraphics[width=#3]{#1}
+	~\\#5
+    \end{frame}
+}
+   
+}
+
+\renewcommand{\myimage}[6]{}
+
+
+\newcommand{\discussion}{\textbf{Discussion }}
