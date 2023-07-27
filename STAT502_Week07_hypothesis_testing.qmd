@@ -571,14 +571,14 @@ whether the treatments differ from the control.
 
 The first step is a graphical analysis
 
-```{r label=plantgrowthplot}
-plot(weight~group,data=PlantGrowth)
-```
+```{r label=plantgrowthplot} plot(weight~group,data=PlantGrowth) ```
 [above, one would read `weight~group` as "weight _as a function of_
 group"; the "`~`" symbol (which appears on the top left of most
-keyboards) means "is a function of"].  We see that it is not
-immediately clear whether or not the treatments are effective.  To
-answer this, we consider a null hypothesis $H_0$ which is that the
+keyboards) means "is a function of".  The tilde notation is a powerful
+tool and we do not have time to go in to all its functionality.  For
+further details, consult the help page at `?formula`].  We see that it
+is not immediately clear whether or not the treatments are effective.
+To answer this, we consider a null hypothesis $H_0$ which is that the
 treatment has no effect on the growth of the plants.  We quantify the
 evidence against this null by calculating a $p$-value, and this is
 accomplished easily in R:

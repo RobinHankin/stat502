@@ -186,34 +186,6 @@ Multiple regression is a difficult and technical branch of statistical
 theory and it can be a difficult and fraught matter to choose the
 appropriate linear model from similar alternatives.
 
-## Categorical regression
-
-Consider the `InsectSpray` dataset, in which different pesticides
-were applied to agricultural units and the number of insects counted.
-First step is to make a plot:
-
-```{r}
-boxplot(count~spray,data=InsectSprays)
-```
-
-It certainly looks as though the different sprays have different
-effects.  To quantify this we can use the `lm()` idiom:
-
-```{r}
-summary(lm(count~spray,data=InsectSprays))
-```
-
-In the above, we can see the various estimates for the difference
-between spray A and the other sprays (by default, R takes the "base
-case" to be the first label alphabetically).  Note that `spray` is
-a *categorical* variable.  The bottom line gives an overall p-value
-for the null that the sprays are identical.
-
-The tilde notation is a powerful tool and we do not have time to go in
-to all its functionality.  For further details, consult the help page
-at `?formula`.
-
-
 
 ### Correlation coefficient
 
