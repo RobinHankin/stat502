@@ -1,0 +1,244 @@
+# Linear Regression {#linreg}
+
+```
+https://en.wikipedia.org/wiki/Linear_regression
+```
+
+```
+https://www.youtube.com/watch?v=QVFz4idnd6o&index=30&list=PL018X5Hlr4RkgE65Pg93TFY-32KCVpW84
+```
+
+```
+https://www.youtube.com/watch?v=ynNEEB3UfO8&index=31&list=PL018X5Hlr4RkgE65Pg93TFY-32KCVpW84
+```
+
+In this chapter we investigate linear dependencies between two
+datasets.  The technique used will be *linear regression* which is a
+very widely used technique in many fields of quantitative analysis.
+We will consider a number of examples drawn from different
+disciplines.  First we will consider a second hand cars, with price of
+a car being a function of age.  The dataset is:
+
+```{r label=carpricesdef}
+carprices <- data.frame(
+age =
+      c(4.2, 2.1, 4.8, 2.1, 2.9, 4.3, 4.3, 3.3, 3.8, 3.4, 4.2,
+        3.3, 4.1, 2.1, 4.2, 2.9, 2.4, 3.9, 4.9, 3.6, 4.5, 4.6,
+	2.4, 4.2, 4.3, 4.7, 2.4, 4.6, 3.7, 3.8, 3.0, 2.6, 4.2,
+	3.4, 3.6, 2.2, 4.6, 2.2, 2.9, 3.8),
+price =
+  c(686, 886, 526, 1971, 860, 161, 218, 494, 445, 1812, 535, 384, 216, 903, 314, 569, 
+1019, 272, 320, 265, 281, 361, 960, 546, 337, 366, 1545, 212, 
+247, 456, 591, 619, 294, 394, 709, 1765, 491, 801, 1299, 388))
+```
+
+THE FIRST AND NON-NEGOTIABLE STEP TO INVESTIGATING DATA OF THIS NATURE
+IS TO DRAW A SCATTERGRAPH.  THE TECHNIQUES PRESENTED HERE ARE TOTALLY
+WORTHLESS IF YOU DO NOT DRAW A SCATTERGRAPH.  IF YOU CONDUCT A LINEAR
+ANALYSIS WITHOUT A SCATTERGRAPH YOU WILL GET ZERO COURSE CREDIT.
+
+
+```{r label=carpricesplot}
+plot(price~age, data=carprices)
+```
+
+In the above R idiom, the "`~`" symbol is read "is a function of".
+See how the two variables `age` and `price` appear to be related, with
+older cars having a smaller price.  The scattergraph shows directly
+that a linear fit might be a good idea: the relationship is linear,
+there are no serious outliers, and the variability is roughly constant
+along the x-axis.  Having established that a linear model is a good
+starting point, we will use R to quantify the relationship between the
+two variables.
+
+Observe that the vertical axis (price) depends on the horizontal axis
+(age).  Older cars are worth less.  In this example, it is obvious
+which variable appears as the horizontal and which on the vertical
+axis.  However, sometimes it is less clear.
+
+## Linear regression in R
+
+In general, we have variables $x_1,x_2,\ldots x_n$ which are drawn on
+the horizontal axis.  These are the *independent* variables: they may
+be specified as we wish.  We also have variables $y_1,y_2,\ldots y_n$
+which are drawn on the vertical axis.  These variables respond in some
+way to x's and we call these the *dependent* variables, because they
+depend on the x's.
+
+The relationship we usually use is as follows:
+
+$y_i=\alpha + \beta x_i + \epsilon_i,\qquad i=1,2,\ldots n$
+
+Here,
+
+* $x_i$ are the independent variables
+* $y_i$ are the dependent variables
+* $\alpha,\beta$ are the intercept and slope of the straight line which expresses the relationship  between $x_i$ and $y_i$
+* $\epsilon_i\sim N(0,\lambda^2)$ is an error term.  Observe that the $\epsilon_i$ are independent and identically distributed.
+
+We do not know the values of $\alpha,\beta$, so have to estimate them.
+The standard approach is to find the maximum likelihood estimate,
+$\hat{\alpha},\hat{\beta}$.  The R idiom to do this is to use the
+`lm()` function:
+
+```{r label=olscarprice}
+lm(price~age,data=carprices)
+```
+
+This shows that the line of best fit is $y=1939.3-365.3*x$.  It is
+straightforward to plot this on the graph:
+
+```{r label=olscarpriceline}
+plot(price~age,data=carprices)
+abline(lm(price~age,data=carprices))
+```
+
+However, at this point we are not sure how accurately the fit
+parameters are known, or in particular whether the slope is
+statistically significant.  To answer such questions we specify
+$H_0\colon\beta=0$ and seek a p-value.  R provides functionality to do
+this:
+
+```{r label=summaryolscarprice}
+summary(lm(price~age,data=carprices))
+```
+
+The p-value reported is two-sided; to get the one-sided equivalent,
+simply divide by 2.
+
+
+### Critical evaluation and logarithmic transform
+
+The above analysis is not perfect.  For example, the structure of the
+model has two defects: firstly, the price of the car becomes negative
+after a certain amount of time, which is unrealistic.  We can mitigate
+this by considering a logarithmic transform:
+
+```{r label=plotlog10pricecarprice}
+plot(log10(price)~age,data=carprices)
+```
+
+Here we use logs to the base 10.  This looks suitable for linear regression:
+
+```{r}
+summary(lm(log10(price)~age,data=carprices))
+```
+
+See how the p-value is about the same in this case.  One way to
+objectively compare the two approaches is to look at the correlation
+coefficient, often called $R^2$.  According to the linear model above,
+these two models are about the same.
+
+The transformed model would be
+
+$\log(\mathrm{price}) = 3.54 - 0.233*\mathrm{age}$
+
+which would translate to about $3500*1.71^{-\mathrm{age}}$.  Note that
+this model cannot predict negative prices as exponenentials are always
+strictly positive.
+
+
+## Multiple and restricted regression
+
+The tilde device for formulae (that is, expressions such as
+"`y~x`") is a very powerful and flexible notation.
+
+Consider the `swiss` dataset, built in to R.  Type `?swiss` at
+the prompt to get more details.  Here, we are interested in infant
+mortality as a function of fertility and prevalence of Catholicism.
+Symbolically we would write
+
+$I_i = \beta_0 + \beta_1 F_i + \beta_2 C_i + \epsilon_i$
+
+where $\beta_0$ is the intercept and $\beta_1,\beta_2$ are slopes.
+The R idiom is:
+
+```{r}
+summary(lm(Infant.Mortality ~ Fertility + Catholic, data=swiss))
+```
+
+In the above, note how the "`+`" symbol is used to regress infant
+mortality against fertility *and* percentage of Catholics.  In this
+case, see that catholicism is not a significant factor as the p-value
+exceeds 5\%.  Note that it is difficult to draw a scattergraph with
+more than one dependent variable (it is possible but difficult with
+two, and pretty much impossible to do with more than two).  However,
+we can plot the *residuals* which are defined as the difference
+between observation and prediction; $\epsilon_i$ the formula above.
+
+```{r}
+swissfit <- lm(Infant.Mortality ~ Fertility + Catholic, data=swiss)
+hist(residuals(swissfit),col='gray')
+```
+
+The above histogram shows that the residuals are roughly Gaussian, in
+line with the assumptions of linear modelling.  Note in passing that
+`fit` is a perfectly legit R object and we can examine and
+manipulate it easily.  For example:
+
+```{r}
+coefficients(swissfit)
+```
+
+shows the three coefficients in the model fit.
+
+Multiple regression is a difficult and technical branch of statistical
+theory and it can be a difficult and fraught matter to choose the
+appropriate linear model from similar alternatives.
+
+## Categorical regression
+
+Consider the `InsectSpray` dataset, in which different pesticides
+were applied to agricultural units and the number of insects counted.
+First step is to make a plot:
+
+```{r}
+boxplot(count~spray,data=InsectSprays)
+```
+
+It certainly looks as though the different sprays have different
+effects.  To quantify this we can use the `lm()` idiom:
+
+```{r}
+summary(lm(count~spray,data=InsectSprays))
+```
+
+In the above, we can see the various estimates for the difference
+between spray A and the other sprays (by default, R takes the "base
+case" to be the first label alphabetically).  Note that `spray` is
+a *categorical* variable.  The bottom line gives an overall p-value
+for the null that the sprays are identical.
+
+The tilde notation is a powerful tool and we do not have time to go in
+to all its functionality.  For further details, consult the help page
+at `?formula`.
+
+
+
+### Correlation coefficient
+
+The p-value measures the strength of evidence against the null, but
+this is not informative about the "closeness of fit" of the linear
+regression.  To measure this, we use the correlation coefficient $r$
+where $r=0$ corresponds to no relation $r$ close to $+1$ corresponds
+to close positive association, and $r$ close to $-1$ corresponds to
+close negative association.  Intermediate values correspond to weak
+correlation.  See the following diagram for visualization.
+
+```{r}
+library("mvtnorm")
+f <- function(n,rho){
+    d <- rmvnorm(n,sigma=matrix(c(1,rho,rho,1),2,2))
+ plot(d,xlab='x',ylab='y',main=paste("correlation coefficient ",rho,sep=""))
+}
+
+par(mfrow=c(2,2))
+f(100,0)
+f(100,0.5)
+f(100,0.9)
+f(100,-0.99)
+```
+
+It is common to consider $r^2$ which is non-negative and treats
+positive and negative slopes equally.  in R, use `summary()` whih
+reports an estimate for $r^2$.
