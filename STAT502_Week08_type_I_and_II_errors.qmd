@@ -39,7 +39,7 @@ $H_0$ if $\overline{x}$ exceeds a certain critical value.  We want to
 ensure that, if the null is true, the null is rejected only 5\% of the
 time, so the critical value is given by:
 
-```{r}
+```{r label=firstqnorm}
 qnorm(0.95,0,1/sqrt(10))
 ```
 
@@ -47,7 +47,7 @@ we will call this 0.52 for simplicity.  Below is the R idiom for
 testing $H_0\colon\mu=0$; the dollar construction extracts just the
 p-value:
 
-```{r}
+```{r label=ttestrandom} 
 set.seed(0)
 t.test(rnorm(10),alternative="greater")$p.value
 ```
@@ -57,7 +57,7 @@ The p-value exceeds the critical value of 0.05, so we fail to reject
 the null as we should.  However, we can repeatedly try the same test
 with the `replicate()` command:
 
-```{r}
+```{r label=replicatettest}
 f <- function(n,mean=0){
  t.test(rnorm(n,mean=mean),alternative="greater")$p.value
 }
@@ -145,7 +145,7 @@ probability of correctly detecting that the null is incorrect.
 The following diagram shows the different types of errors visually.
  Study the R idiom carefully.
 
-```{r}
+```{r label=visualtypeIandIIerror}
 x <- seq(from=-5,to=5,len=100)
 plot(x,dnorm(x),type='n',lwd=2,xlab='sample mean',ylab='probability density')
 
