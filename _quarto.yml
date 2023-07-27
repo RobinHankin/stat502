@@ -10,6 +10,8 @@ book:
     - index.qmd
     - STAT502_Week01_GettingStarted.qmd
     - STAT502_Week01-02_ProbabilityIntro.qmd
+    - STAT502_Week07_hypothesis_testing.qmd
+    - STAT502_Week08_type_I_and_II_errors.qmd
     - references.qmd
 
 bibliography: references.bib
