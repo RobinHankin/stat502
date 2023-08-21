@@ -357,8 +357,8 @@ after
 
 Observe how the different students have very different score, but each
 one changes a small amount.  Because the datasets have a natural
-pairing with each other (we would compare smith _before_ with smith
-_after_).
+pairing with each other (we would compare `smith` _before_ with
+`smith` _after_).
 
 There are two natural approaches.  The simplest is to consider the
 difference in scores and perform a t-test on that:
@@ -550,6 +550,7 @@ is not without problems and many workers [including your lecturer!]
 question the validity of this form of reasoning.  Actually, your
 lecturer harbours serious doubts as to the validity of the entire
 concept of $p$-values and indeed that of probability theory itself.
+But don't tell anyone.
 
 
 ## ANOVA
