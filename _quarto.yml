@@ -10,6 +10,10 @@ book:
     - index.qmd
     - STAT502_Week01_GettingStarted.qmd
     - STAT502_Week01-02_ProbabilityIntro.qmd
+    - STAT502_Week03_DiscreteRVs.qmd
+    - STAT502_Week04_DiscreteDistributions.qmd
+    - STAT502_Week05_ContinuousRVs.qmd
+    - STAT502_Week06_ContinuousDistributions.qmd
     - STAT502_Week07_hypothesis_testing.qmd
     - STAT502_Week08_type_I_and_II_errors.qmd
     - STAT502_Week09_linear_regression.qmd
