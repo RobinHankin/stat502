@@ -60,7 +60,14 @@ punif(0.5, 0, 2)
 
 ### Example 2: Uniform distribution {.unnumbered}
 
-A farmer living in western Nebraska has an irrigation system to provide water for crops, primarily corn, on a large farm. Although he has thought about buying a backup pump, he has not done so. If the pump fails, delivery time $X$ for a new pump to arrive is uniformly distributed over the interval from 1 to 4 days. The pump fails. It is a critical time in the growing season in that the yield will be greatly reduced if the crop is not watered within the next 3 days. 
+A farmer living in western Nebraska has an irrigation system to
+provide water for crops, primarily corn, on a large farm. Although he
+has thought about buying a backup pump, he has not done so. If the
+pump fails, delivery time $X$ for a new pump to arrive is uniformly
+distributed over the interval from 1 to 4 days.  One day, the pump
+fails.  It is a critical time in the growing season in that the yield
+will be greatly reduced if the crop is not watered within the next 3
+days.
 
 (Scheaffer and Young, 2010, ex 5.7, page 213)
 

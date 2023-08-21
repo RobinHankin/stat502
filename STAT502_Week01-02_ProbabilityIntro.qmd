@@ -355,22 +355,29 @@ Answer: If $S$ and $P$ are independent, we have $p(S\cap P)=p(S)\times p(P)$.  W
 
 ## Bayes's Theorem
 
+Bayes's theorem, discovered by Reverend Thomas Bayes in 1763, makes use
+of the conditional probability and has proven useful in probabilistic
+modelling in many areas such as health science, biology, economics,
+finance, and astronomy.
 
-
-Bayes's theorem, discovered by Reverend Thomas Bayes in 1763, makes
-use of the conditional probability and has proven useful in
-probabilistic modelling in many areas such as health science, biology,
-economics, finance, and astronomy.
-
-Let $A$ and $B$ are events and $p(B) \neq 0$. Then, Bayes's theorem
-states that
+Let $A$ and $B$ be events with probabilities $p(A)$, $p(B)$
+respectively, $p(B) \neq 0$. Then, Bayes's theorem states that
 
 $$
 p(A|B) = \frac{p(B|A)p(A)}{p(B)}
 $$
-where $p(A|B)$ is the posterior probability, $p(B|A)$ is a conditional probability and also called the likelihood, $p(A)$ is prior, and $p(b)$ is the marginal probability or marginal likelihood.
 
-Basically, the posterior is an updated probability after the new information/data (likelihood) arrives, given the prior information. For example, we might think about the chance of a shower given the cloudy sky, based on prior knowledge and the fact that what happened the last time this similar situation occurred.
+where $p(A|B)$ [read "the probability of $A$ given $B$", or "the
+probability of $A$ occurring given that $B$ has occurred"] is the
+_posterior_ probability.  We say that $p(B|A)$ is a conditional
+probability and also called the likelihood, $p(A)$ is the _prior_, and
+$p(B)$ is the _marginal_ probability or marginal likelihood.
+
+Basically, the posterior is an updated probability after the new
+information/data (likelihood) arrives, given the prior information.
+For example, we might think about the chance of a shower given the
+cloudy sky, based on prior knowledge and the fact that what happened
+the last time this similar situation occurred.
 
 ### Example (Ross, 2006, Example 3f) {.unnumbered}
 
