@@ -1,0 +1,788 @@
+# Continuous Distributions {#continuousdist}
+
+## Uniform Distribution
+
+### Definition
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+The random variable $X$ has a **uniform distribution** on the interval $(a, b)$ if its density function is given by:
+$$
+f(x) = \begin{cases}
+\frac{1}{b-a}, & a \leq x \leq b \\
+0,				& \text{otherwise.}
+\end{cases}
+$$
+
+The distribution function of $X$ is: 
+\begin{align*}
+F(x) &=  
+\begin{cases}
+0 & \text{for } x < a  \\
+\frac{x-a}{b-a}, & a \leq x \leq b \\
+1 & \text{for } x > b
+\end{cases}
+\end{align*}
+
+\textbf{Mean: }$E[X] = \frac{(a+b)}{2}$
+
+\textbf{Variance:} $Var[X] = \frac{(b-a)^2}{12}$ 
+
+::: 
+
+```{r uniform_pdf_cdf, echo=FALSE, fig.height=5, fig.width=10, out.width='100%'}
+par(mfrow=c(1,2))
+x <- seq(0, 10, 0.001)
+plot(x, dunif(x, 5, 8), type="l", main="Density Function", ylab="f(x)")
+plot(x, punif(x, 5, 8), type="l", main="Distribution Function", ylab="F(x)")
+```
+
+### Uniform Distribution in R
+
+`dunif(x, min, max)`
+
+`punif(x, min, max)`
+
+`qunif(Fx, min, max)`
+
+`runif(numSims, min, max)`
+
+### Example 1: Uniform distribution {.unnumbered}
+
+Let $X \sim U(0, 2)$. Find $P(X  \leq 0.5)$.
+
+```{r, echo=TRUE}
+(0.5-0)/(2-0)
+punif(0.5, 0, 2)
+```
+
+### Example 2: Uniform distribution {.unnumbered}
+
+A farmer living in western Nebraska has an irrigation system to provide water for crops, primarily corn, on a large farm. Although he has thought about buying a backup pump, he has not done so. If the pump fails, delivery time $X$ for a new pump to arrive is uniformly distributed over the interval from 1 to 4 days. The pump fails. It is a critical time in the growing season in that the yield will be greatly reduced if the crop is not watered within the next 3 days. 
+
+(Scheaffer and Young, 2010, ex 5.7, page 213)
+
+a) Assuming that the pump is ordered immediately and that installation time is negligible, what is the probability that the farmer will suffer major yield loss?
+
+*Solution*
+$P(X > 3)  = \int_3^4 \frac{1}{3} dx = \frac{1}{3}$
+
+b) Sketch the density function and distribution function of $X$
+
+```{r, farmer_crops_pdfcdf, out.width='50%', echo=FALSE, fig.align='center'}
+x <- seq(0, 5, 0.01)
+plot(x, dunif(x, 1, 4), ylab="f(x)", pch="-", main= "X ~ Uniform(1,4)")
+plot(x, punif(x, 1, 4), ylab="F(x)", type="l", main= "X ~ Uniform(1,4)")
+```
+
+### Example 3: Uniform distribution {.unnumbered}
+
+Derive the distribution function of the uniform random variable.
+
+*Solution*
+
+The cdf can be derived as follows:
+\begin{align*}
+F(x) &= \int_a^x f(t) dt  = \int_a^x \frac{1}{b-a} dt \\
+&= \left[\frac{t}{b-a} \right]_a^x \\
+%&= \frac{x}{d-c} - \frac{c}{d-c}  \\
+&=  \frac{x-a}{b-a}, \quad  a \leq x \leq b
+\end{align*}
+	
+### Properties of the Uniform Distribution
+
+For a subinterval $(c,d)$ of $(a,b)$, then:
+\begin{align*}
+P(c \leq X \leq d) & = \int_{c}^{d} \frac{1}{b-a} dx  \\
+& = \left. \frac{x}{b-a} \right|^d_c \\
+& =  \frac{d-c}{b-a}\\
+\end{align*}
+
+Special case: **uniform $[0,1]$ random variable**.
+
+$$
+f(x) = \begin{cases}
+1 & 0 < x < 1 \\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+## Exponential Distribution
+
+### Definition
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+A random variable $X$ has an **exponential distribution**, $X \sim \textrm{Exp}(\lambda)$, if and only if it has density function:
+
+\begin{equation*}
+f(x) = 
+\begin{cases}
+\lambda e^{-\lambda x} & \qquad \text{where } x \geq 0, \lambda > 0 \\
+0 & \qquad \text{otherwise}
+\end{cases}
+\end{equation*}
+
+The distribution function of $X$ is:
+\begin{equation*}
+F(x) = 
+\begin{cases}
+0, & \qquad x < 0 \\
+\int_{0}^{x} \lambda e^{-\lambda u} du = 1 - e^{-\lambda x}, & \qquad x \geq 0
+\end{cases}
+\end{equation*}
+
+\textbf{Mean: }$E[X] =1/\lambda$
+
+\textbf{Standard Deviation: } $Std(X) =1/\lambda$
+
+\textbf{Variance:} $Var[X] = 1/\lambda^2$ \\
+
+:::
+
+### Example 4: Applications of Exponential Random Variables {.unnumbered}
+
+- Waiting time between the arrival of successive customers
+- Time to failure of an electronic component. 
+- Time between successive emissions of particles from a radioactive substances
+
+```{r exponential_pdf_cdf, echo=FALSE, fig.height=5, fig.width=10, out.width='100%'}
+
+par(mfrow=c(1,2))
+
+x_seq <- seq(0, 10, 0.001)
+
+plot(x_seq, dexp(x_seq, 2), type="l", main="Density Function", ylab="f(x)")
+plot(x_seq, pexp(x_seq, 2), type="l", main="Distribution Function", ylab="F(x)")
+
+```
+
+### Exponential Distribution in R
+
+`dexp(x, lambda)`
+
+`pexp(x, lambda)`
+
+`qexp(Fx, lambda)`
+
+`rexp(numSims, lambda)`
+
+### Example 5: Exponential Distribution {.unnumbered}
+
+Consider an exponential random variable $X$ with mean 2. Find $P(X > 3)$.
+
+*Solution*
+
+```{r, echo=TRUE}
+lambda <- 1/2
+1 - (1 - exp(-lambda*3))
+1 - pexp(3, lambda)
+```
+
+### Example 6: Exponential Distribution {.unnumbered}
+
+A sugar refinery has three processing plants, all of which receive raw sugar in bulk.
+The amount of sugar that one plant can process in one day can be modeled as having
+an exponential distribution with a mean of 4 tons for each of the three plants. 
+(Scheaffer and Young, 2010, ex5.9, page 220)
+
+a) What is the probability that a plant will process more than 4 tons on a given day?
+
+*Solution*
+
+$$X \sim \text{Exponential(0.25)}$$
+
+\begin{align*}
+P(X > 4) & = 1 - (1- e^{-0.25(4)})\\
+& = 0.37
+\end{align*}
+
+```{r, echo=TRUE}
+1-pexp(4, 0.25)
+```
+
+b) If the plants operate independently, find the probability that exactly two of the three plants will process more than 4 tons on a given day. 
+
+*Solution*
+
+$$N \sim \text{Binomial}(3, p)$$
+
+where $p = P(X > 4) = 0.37$
+
+\begin{align*}
+P(N = 2) & = 
+\binom{3}{2} (0.37)^2 (0.63)^1 \\
+& = 0.2587
+\end{align*}
+
+```{r, echo=TRUE}
+dbinom(2, 3, 0.37)
+```
+
+
+c) If the plants operate independently, find the probability that an odd number of plants
+will process more than 4 tons on a given day. 
+
+*Solution*
+
+$$N \sim \text{Binomial}(3, p)$$
+
+where $p = P(X > 4) = 0.37$
+
+\begin{align*}
+P(N = 1 \cup N=3) & = 
+P(N = 1) + P(N=3) + P(N = 1 \cap N=3) \\
+ & = \binom{3}{1} (0.37)^1 (0.63)^2 + \binom{3}{3} (0.37)^3 (0.63)^0 - 0
+\\
+& = dbinom(1, 3, 0.37)  + dbinom(3, 3, 0.37) \\
+\end{align*}
+
+```{r, echo=TRUE}
+dbinom(1, 3, 0.37) + dbinom(3, 3, 0.37)
+```
+
+d) Which of the following pdfs corresponds to the amount of sugar processed by one plant?
+
+*Solution*
+
+The left one - $\lambda =  0.25$.
+
+We can also check by looking at the area under the curve to the right of $4$ and comparing it to the answers above (0.37).
+
+```{r exponential_pdf_example, echo=FALSE, fig.height=5, fig.width=10, out.width='100%'}
+
+par(mfrow=c(1,2))
+
+x <- seq(0, 20, 0.001)
+
+plot(x, dexp(x, 0.25), type="l", main="Density Function") 
+plot(x, dexp(x, 4), type="l", main="Density Function", xlim=c(0, 4)) 
+
+```
+
+### Properties
+
+**Alternative Parameterization**
+
+The exponential distribution is sometimes described using the mean rather than rate.
+
+::: {.callout-note appearance="simple"}
+
+## Properties
+
+A random variable $X$ has an **exponential distribution** with mean $\theta$
+if it has density function:
+
+\begin{equation*}
+f(x) = 
+\begin{cases}
+\frac{1}{\theta} e^{-  x/\theta} & \qquad \text{where } x \geq 0, \theta > 0 \\
+0 & \qquad \text{otherwise}
+\end{cases}
+\end{equation*}
+
+The distribution function of $X$ is:
+
+\begin{equation*}
+F(x) = 
+\begin{cases}
+0, & \qquad x < 0 \\
+ 1 - e^{- x/\theta}, & \qquad x \geq 0
+\end{cases}
+\end{equation*}
+
+\textbf{Mean: }$E[X] =\theta$
+
+\textbf{Standard Deviation:} $Std(X) =\theta$ 
+
+\textbf{Variance:} $Var[X] = \theta^2$ 
+
+:::
+
+**Memoryless Property**
+
+::: {.callout-note appearance="simple"}
+
+## Property
+
+If a random variable $X$ has an exponential distribution, then for all $t >0$ and $s > 0$
+$$P(X > s + t | X > s ) = P(X > t)$$
+
+This property is called the **memoryless property**.
+
+:::
+
+### Example 7: Memoryless Property {.unnumbered}
+
+Suppose a customer has been waiting in line to be served for $x$ time units and would like to know the probability that he or she will be required to wait a further $t$ units of time. The calculation of this probability does not depend on the length of time already spent waiting, i.e. the distribution does not ``remember'' how long the customer has been waiting. 
+
+### Example 8: Memoryless Property {.unnumbered}
+
+Show that an exponential random variable with cdf $F(x) = 1 - e^{-\lambda x}, x \geq 0$ has the memoryless property.
+
+*Solution*
+
+\begin{align*}
+P(X > s + t | X > s) 
+&= P((X>s+t) \cap (X>s))/P(X>s)\\
+&= P(X>s+t)/P(X>s)\\ % \qquad \text{\footnotesize If X $>$ s+t then X$>$s }\\
+& =e^{-\lambda (s+t)}/e^{-\lambda s} \\ 
+&= e^{-\lambda t} = P(X>t)
+\end{align*}
+
+## Gamma Distribution
+
+### Definition
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+A random variable $X$ has a **Gamma distribution**, $X \sim \textrm{Gamma}(\alpha, \lambda)$, with shape parameter $\alpha >0$ and rate parameter $\lambda >0$ if it has a density function:
+
+\begin{equation*}
+f(x) = 
+\begin{cases}
+\frac{x^{\alpha-1}\lambda^\alpha  e^{-\lambda x}}{\Gamma(\alpha)}  & 
+\qquad x \geq 0\\
+0 & x < 0
+\end{cases}
+\end{equation*}
+
+\textbf{Mean: } $E[X] = \alpha/\lambda$ 
+
+\textbf{Standard deviation:} $Std(X) = \sqrt{\alpha}/\lambda$
+
+\textbf{Variance: }$Var[X] = \alpha/\lambda^2$
+
+:::
+
+```{r gamma_pdf_cdf, echo=FALSE, fig.height=5, fig.width=10, fig.align='center', out.width='100%'}
+
+par(mfrow=c(1,2))
+
+x <- seq(0, 20, 0.001)
+alpha <- c(0.5, 1, 2, 4)
+lambda <- 1
+
+#PDF
+plot(x, dgamma(x, alpha[1], lambda), 
+		ylab = "f(x)", type="l", col=1, ylim=c(0, 1.2),
+         main = expression(paste("PDF: X ~ Gamma(", alpha, ",", lambda, ")")))
+
+for(i in 2:length(alpha)){
+    lines(x, dgamma(x, alpha[i], lambda), type="l", col=i)
+  }
+
+
+leg = paste("Gamma(", alpha, ", ", lambda, ")", sep="")
+legend("topright", legend=leg, col=1:length(alpha), lty=1)
+
+#CDF
+
+plot(x, pgamma(x, alpha[1], lambda), 
+		ylab = "F(x)", type="l", col=1,
+         main = expression(paste("CDF: X ~ Gamma(", alpha, ",", lambda, ")")))
+
+for(i in 2:length(alpha)){
+    lines(x, pgamma(x, alpha[i], lambda), type="l", col=i)
+  }
+
+
+leg = paste("Gamma(", alpha, ", ", lambda, ")", sep="")
+legend("bottomright", legend=leg, col=1:length(alpha), lty=1)
+
+```
+
+### Example 9: Applications of the Gamma Distribution {.unnumbered}
+
+- Component lifetimes (a few fail early, many have an ``average'' lifetime, and a few last a very long time)
+- Rainfall over a given period of time
+- Survival times
+- Fish lengths
+- Time until failure of the $\alpha$th independent exponentially distributed component
+
+### Gamma Distribution in R
+
+`dgamma(x, alpha, lambda)`
+
+`pgamma(x, alpha, lambda)`
+
+`qgamma(Fx, alpha, lambda)`
+
+`rgamma(numSims, alpha, lambda)`
+
+### Example 10: Gamma Distribution in R {.unnumbered}
+
+Consider a gamma random variable $X$ with shape parameter 2 and rate parameter 3. Find $P(X < 2.5)$.
+
+*Solution*
+
+```{r}
+pgamma(2.5, 2, 3)
+```
+
+### Properties of the Gamma Distribution
+
+### Distribution Function {.unnumbered}
+
+The **cumulative distribution function** is not available in closed form, but can be evaluated numerically:
+
+\begin{equation*}
+F(x; \alpha, \lambda) = \int_{0}^{x} \frac{t^{\alpha-1}\lambda^\alpha  e^{-\lambda t}}{\Gamma(\alpha)} dt
+\end{equation*}
+
+In `R`, the distribution function can be calculated using the command:
+
+`pgamma(x, shape = alpha, rate = lambda)`  (default)
+
+or
+
+`pgamma(x, shape = alpha, scale = 1/lambda)`
+
+### Example 11: Gamma Distribution {.unnumbered}
+
+The weekly downtime $X$ (in hours) for a certain industrial machine has approximately a gamma distribution with $\alpha$ = 3.5 and $\lambda$ = 2/3. (Adapted from Scheaffer and Young, ex5.67, pp232)
+
+a) Find the expected value and variance of $X$
+
+*Solution*
+
+$E[X] = \alpha/\lambda = \frac{3.5}{2/3}$ hours
+
+$Var[X] = \alpha/\lambda^2 = \frac{3.5}{(2/3)^2}$ hours
+
+b) What is the probability that the weekly downtime will exceed 5 hours? Use the relevant `R` code below to compute your answer.
+
+*Solution*
+
+```{r downtime_gammacdf}
+pgamma(seq(0, 6, 0.5), 3.5, 2/3)
+pgamma(seq(0, 6, 0.5), 3.5, scale=1.5)
+dgamma(seq(0, 6, 0.5), 3.5, 2/3)
+```
+
+$P(X > 5) = 1 - P(X \leq 5)$
+
+```{r}
+1 - pgamma(5, 3.5, 2/3)
+```
+
+c) Suppose the loss $L$ (in dollars) to the industrial operation as a result of this downtime is given by
+$$L = 30X + 2X^2$$
+
+Find the expected value of $L$.
+
+*Solution*
+
+Recall that:
+$Var[X] = E[X^2] - (E[X])^2$.
+
+For a gamma random variable:
+
+$$E[X^2] = \alpha/\lambda^2 + \alpha^2/\lambda^2 = \alpha(1 + \alpha)/\lambda^2$$
+
+\begin{align*}
+E[L] & = E[30X + 2X^2] \\
+& = 30E[X] + 2E[X^2]\\
+&= 30 \left(\frac{3.5}{2/3}\right) + 2\left( \frac{3.5(1 + 3.5)}{(2/3)^2}\right)
+= \$228.38 
+\end{align*}
+
+```{r}
+alpha <- 3.5; lambda <- 2/3
+
+30*alpha/lambda + 2*alpha*(1+alpha)/(2/3)^2
+```
+
+#### Relationship to Other Distributions {.unnumbered}
+
+The Gamma distribution is closely related to a number of other distributions. 
+
+- If $\alpha = 1$, then this gives the \textbf{exponential distribution} with parameter $\lambda$.
+- If $\alpha$ is a positive integer, then this gives the \textbf{Erlang distribution}.
+- If $\alpha = n/2$ where $n$ is a positive integer and $\lambda = 1/2$, then this gives a \textbf{chi-square distribution}.
+
+#### Sum of Gamma Random Variables {.unnumbered}
+
+::: {.callout-note appearance="simple"}
+
+## Property
+
+The \textbf{sum of $n$ independent gamma random variables} also has a gamma distribution.
+If $X_i$ are independent gamma random variables with parameters $\alpha_i$ and $\lambda$
+and 
+$Y = \sum_{i=1}^n X_i$, then 
+
+$$Y \sim \text{Gamma}(\sum_{i=1}^n\alpha_i, \lambda)$$
+
+$$\displaystyle E[Y] =  \frac{\sum_{i=1}^n\alpha_i}{\lambda} \qquad \qquad 
+\displaystyle Var[Y] = \frac{\sum_{i=1}^n\alpha_i}{\lambda^2} $$
+
+:::
+
+## Normal Distribution
+
+### Definition
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+A random variable $X$ is **Normally distributed**, $X \sim N(\mu, \sigma^2)$,
+ if and only if
+it has probability density function:
+
+\begin{equation*}
+f_X(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}
+\right)^2}, \qquad x \in \mathbb{R}, \sigma > 0
+\end{equation*}
+
+\textbf{Mean:}  $\mu$ 
+
+\textbf{Variance:} $\sigma^2$
+
+**Special case:** The **standard normal distribution**, denoted $Z$, has a mean of $\mu=0$ and a standard deviation of $\sigma=1$, 
+$$Z \sim  N(0, 1)$$
+
+:::
+
+
+```{r normal_pdf_cdf, echo=FALSE, fig.height=5, fig.width=10, fig.align='center', out.width='100%'}
+
+par(mfrow=c(1,2))
+
+x <- seq(-15, 25, 0.1)
+
+mu <- c(0, 0, 4, 10)
+sigma <- c(1, 3, 5, 5)
+n <- length(mu)
+
+#PDF
+plot(x, dnorm(x, mu[1], sigma[1]), 
+		ylab = "f(x)", type="l", col=1, 
+		xlim = c(-15, 25),
+		#ylim=c(0, 1.2),
+         main = expression(paste("PDF: X ~ Normal(", mu, ",", sigma^2, ")")))
+
+for(i in 2:n){
+    lines(x, dnorm(x, mu[i], sigma[i]), type="l", col=i)
+  }
+
+
+leg = paste("Normal(", mu, ", ", sigma^2, ")", sep="")
+legend("topright", legend=leg, col=1:n, lty=1)
+
+#CDF
+
+plot(x, pnorm(x, mu[1], sigma[1]), 
+		ylab = "F(x)", type="l", col=1,
+		xlim = c(-15, 25),
+         main = expression(paste("CDF: X ~ Normal(", mu, ",", sigma^2, ")")))
+
+for(i in 2:n){
+    lines(x, pnorm(x, mu[i], sigma[i]), type="l", col=i)
+  }
+
+
+leg = paste("Normal(", mu, ", ", sigma^2, ")", sep="")
+legend("bottomright", legend=leg, col=1:n, lty=1)
+
+```
+
+### Example 12: Applications of Normal Distribution {.unnumbered}
+
+- Experimental errors in scientific measurements
+- Test scores on achievement tests
+- Heights of individuals selected at random from a population
+- Approximation to other distributions
+
+### Normal Distribution in R
+
+`dnorm(x, mean, sd)`
+
+`pnorm(x, mean, sd)`
+
+`qnorm(Fx, mean, sd)`
+
+`rnorm(numSims, mean, sd)`
+
+### Example 13: Normal Distribution in R {.unnumbered}
+
+Consider a normal random variable $X$ with mean 3 and variance 0.2. Find $P(X < 2.8)$.
+
+*Solution*
+
+```{r}
+pnorm(2.8, 3, sqrt(0.2))
+```
+
+### Relationship between Normal and Standard Normal
+
+Suppose $X \sim N(\mu, \sigma^2)$ and $Z \sim N(0,1)$.
+
+The random variable $X$ can be \textbf{transformed} to a standard Normal random variable as follows:
+
+$$
+Z = \frac{X - \mu}{\sigma}
+$$
+
+Then
+$$
+P(X \leq x) = P( Z \leq \frac{x - \mu}{\sigma})  = P( Z \leq z)
+$$
+
+In the **old days**, before `R`, statisticians had to use a book of tables to compute the probabilities. Rather than carrying around a table for every single combination of $\mu$ and $\sigma$, they would use tables for the standard Normal distribution and convert their $X$ to a $Z$ as shown above.
+
+
+$$P(\mu-1\sigma \leq X \leq \mu+1\sigma) \approx 0.68 \quad \mbox{1 standard deviation from mean}$$
+
+$$P(\mu-2\sigma \leq X \leq \mu+2\sigma) \approx 0.95 \quad \mbox{2 standard deviations from mean}$$
+
+$$P(\mu-3\sigma \leq X \leq \mu+3\sigma) \approx 0.997 \quad \mbox{3 standard deviations from mean}$$
+
+**R code to create plot**
+
+```{r normal_probability, echo=TRUE, out.width='70%', fig.width = 8, fig.height =5}
+mu <- 0
+sigma <- 1
+x <- seq(-4, 4, 0.001)
+
+cols <- c(gray.colors(4, start = 0.1, end = 0.9, gamma = 2.2, alpha = NULL),
+          gray.colors(4, start = 0.9, end = 0.1, gamma = 2.2, alpha = NULL))
+colText <- c("black")
+
+
+#Create plot
+plot(x, dnorm(x, mu, sigma), type="l", lwd=3, ylab="f(x)", yaxt="n", xaxt="n")
+
+#Add axis labels
+axis(side=1, at=-3:3, labels=c(
+  expression(mu ~-3*sigma), expression(mu ~-2 *sigma), expression(mu~-1 *sigma),  
+  expression(mu), 
+  expression(mu ~+1*sigma), expression(mu ~+2 *sigma), expression(mu ~+3 *sigma)))
+
+#Compute probabilities
+Fx <- pnorm(-4:4, mu, sigma)
+
+#For 4 standard deviations either side of the mean
+for(i in -4:4){
+  j <- i+1
+  k <- 5
+  ijvals <- seq(i, j, 0.001)
+  
+  #Shade areas
+  polygon(x = c(i,ijvals , j), 
+          y = c(0, dnorm(ijvals, 0, 1), 0), 
+          col=cols[i+k], border="white")
+  
+  #Add probability of each area as text
+  text((i+0.5), 0.05, labels=round(diff(Fx)[i+k],digits=3), col=colText[i+k])
+}
+```
+
+### Properties of the Normal Distribution
+
+The normal distribution is a commonly used distribution. It is referred to as being **bell**-shaped. It is symmetric about the mean $\mu$, with half the probability falling on either side of $\mu$. The form of the probability density function means that unlike some other distributions, the probabilities cannot be expressed with a closed-form function. Numerical integration techniques have been used to evaluate the cumulative distribution function for the normal distribution. The resulting probabilities for the standard normal distribution are provided in tables.
+
+::: {.callout-note appearance="simple"}
+
+## Properties
+
+The **cumulative distribution function** is not available in closed form, but can be evaluated:
+
+- Converting $X\sim N(\mu, \sigma^2)$ to a standard normal random variable $Z\sim N(0,1)$ and using tables.
+- Using software such as `R`. In `R`, the distribution function can be calculated using the command: `pnorm(x, mu, sigma)`
+
+\textbf{Properties}
+
+- Area under the pdf $f(x)$ is equal to 1
+- Symmetric:  area to left of mean $\mu$ = 0.5 = area to right of mean $\mu$ 
+- To compute $P(X \leq x)$ find the area to the left of $x$.
+- Because $X$ is a continuous random variable, $P(X=x) =0$.
+
+:::
+
+### Example 14: Normal Distribution {.unnumbered}
+
+A machining operation produces steel shafts where diameters have a normal distribution with a mean of 1.005 inches and a standard deviation of 0.01 inch. (Adapted from Scheaffer and Young, 2010, ex 5.87, page 351)
+
+a) What is the probability that a randomly selected steel shaft will be less than 1.005 inches in diameter?
+
+*Solution*
+
+Let $X$ denote the diameter of steel shafts, where $X \sim N(1.005, 0.01)$.
+
+$$P(X \leq 1.005) = P(X \leq \mu) = 0.5$$
+
+```{r}
+pnorm(1.005, 1.005, 0.01)
+```
+
+b) What is the probability that a randomly selected steel shaft will be less than 1.02 inches in diameter?
+
+(i) estimate the probability using the properties of the normal distribution, then (ii) use the relevant R output below to determine the probability.
+
+*Solution*
+
+$$P(X \leq 1.02) \approx P(X \leq \mu + 1.5\sigma) \approx 0.5 + 0.341 + 0.7 (0.136)$$
+
+```{r}
+0.5 + 0.341 + 0.7*(0.136)
+pnorm(1.02, 1.005, 0.01)
+```
+
+```{r echo=FALSE, results="hide"}
+options(scipen = 8, digits = 5)
+options(formatR.arrow=TRUE,width=60)
+```
+
+```{r}
+pnorm(seq(0.95, 1.05, 0.01), 1.005, 0.01)
+dnorm(seq(0.95, 1.05, 0.01), 1.005, 0.01)
+pnorm(seq(0.95, 1.05, 0.01), 0.01, 1.005)
+```
+
+c) Specifications call for diameters to fall within the interval $1.00 \pm 0.02$ inches.
+What percentage of the output of this operation will fail to meet specifications?
+
+*Solution*
+
+$$P(X \leq 0.98, X > 1.02) = 0.073 = 7.3\%$$
+
+```{r}
+pnorm(0.98, 1.005, 0.01)
+1-pnorm(1.02, 1.005, 0.01)
+
+pnorm(0.98, 1.005, 0.01)+1-pnorm(1.02, 1.005, 0.01)
+```
+
+d) What should be the mean diameter of the shafts produced to minimize the fraction that fail to meet specifications?
+
+*Solution*
+
+**1 inch**
+
+e) Numerically verify your answers to a) -- c). 
+
+*Solution*
+
+There are several ways to estimate the probabilities. These are demonstrated below.
+
+```{r}
+x <- rnorm(1e5, 1.005, 0.01)
+
+# a)
+prop.table(table(x < 1.005))
+
+# b)
+sum(x < 1.02)/1e5
+
+# c) 
+prop.table(table(x > 1.02 | x < 0.98))
+
+```

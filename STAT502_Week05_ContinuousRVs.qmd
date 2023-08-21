@@ -1,0 +1,512 @@
+# Continuous Random Variables {#continuous}
+
+## Continuous Random Variables
+
+A random variable, $X$ may be **continuous** or **discrete** (or a mixture of the two).
+
+- Discrete random variable  --- $X$ has a finite or countably infinite range of values.
+
+- Continuous random variable  --- $X$ is continuous and takes values over a real interval.
+
+### Example 1: Applications of continuous random variables {.unnumbered}
+
+- Lifetime of a washing machine
+- Waiting time for a bus
+- Price of shares on the stock market
+- Height of STAT502 students
+
+```{r, continuous_distributions, echo=FALSE, fig.dim = c(8, 6), out.width='100%'}
+par(mfrow=c(2,2))
+x_seq <- seq(0, 10, 0.01)
+plot(x_seq, dexp(x_seq, 0.5), type="l")
+
+x_seq <- seq(-10, 10, 0.01)
+plot(x_seq, dnorm(x_seq, 0, 3), type="l")
+
+x_seq <- seq(0, 10, 0.01)
+plot(x_seq, dgamma(x_seq, 2, 1), type="l")
+
+x_seq <- seq(0, 10, 0.01)
+plot(x_seq, dunif(x_seq, 2, 8), pch="-")
+
+```
+
+### Relative Frequency
+
+### Example 2: Relative Frequency {.unnumbered}
+
+Suppose the lifetimes of 50 batteries were recorded (in hundreds of hours). What can we say about the lifetime of a battery?
+
+```{r, lifetime_battery_data}
+lifetime <- c(0.406, 0.685, 4.778, 1.725, 8.223, 2.343, 1.401, 
+  2.23, 0.538, 0.234, 4.025, 3.323, 2.92, 5.088, 1.458, 1.064, 
+  0.774, 0.761, 5.587, 0.517, 3.246, 2.33, 1.064, 2.563, 0.511, 
+  3.246, 2.33, 1.064, 0.023, 0.225, 1.514, 3.214, 3.81, 3.334, 
+  2.325, 0.333, 7.514, 0.968, 3.491, 2.921, 1.624, 0.334, 4.49, 
+  1.267, 1.702, 2.634, 1.849, 0.186,  1.507, 0.294)
+```
+
+```{r, lifetime_battery, out.width = '50%'}
+h <- hist(lifetime, xlim=c(0, 10), xlab="hours (hundreds)", 
+         main="Battery Lifetimes", col = "gray")
+```
+
+Complete the frequency table:
+
+\begin{tabular}{|p{0.23\linewidth} *{9}{|p{0.05\linewidth} }|}\hline
+$x$ & [0,1) & [1,2) & [2,3) &[3,4) &[4,5) &[5,6) &[6,7) & [7,8) &[8,9)  \\\hline
+Frequency & &&&&&&&&\\[2ex]\hline
+Relative Frequency    &&&&&&&&&\\[2ex]\hline
+\end{tabular}
+
+Note: the interval $[a,b)$ includes point $a$ but not $b$.
+
+*Solution*
+
+```{r, lifetime_battery_tables}
+	table(cut(lifetime, 0:9, include.lowest=TRUE)) 
+	table(cut(lifetime, 0:9, include.lowest=TRUE))/length(lifetime)
+```	
+
+```{r, lifetime_battery2, echo=TRUE, out.width = '80%'}
+h <- hist(lifetime, xlim=c(0, 9), prob=TRUE, 
+      xlab="hours (hundreds)", main="Battery Lifetimes", col = "gray")
+x <- seq(0, 9, 0.01)
+lines(x, 0.5*exp(-x/2), col="red", lwd=2)
+```
+
+### Probability Density Function
+
+::: {.callout-note appearance="simple"}
+
+## Properties
+
+A random variable $X$ is said to be *continuous* if there is a function $f(x)$, called the probability density function, such that:
+
+1. $f(x) \geq 0$, for all $x$
+2. $\displaystyle \int_{-\infty}^{\infty} f(x) dx = 1$
+3. $P(a \leq X \leq b) = \displaystyle \int_{a}^{b} f(x) dx$
+
+(Scheaffer and Young, 2010, page 194)
+
+::: 
+
+The density function is a model of the relative frequency of $X$.
+
+### Example 3: Probability Density Function {.unnumbered}
+
+Suppose we are going to model the battery lifetimes (in hundreds of hours) using the following probability density function.
+$$
+f(x) = \begin{cases}
+\frac{1}{2} e^{-x/2}, &  x> 0 \\
+0, & \text{otherwise}
+\end{cases}
+$$
+
+a) What is the probability that a battery lifetime is less than 200 hours?
+
+*Solution*
+
+\begin{align*}
+P(X \leq 2) & = \int_0^2 \frac{1}{2} e^{-x/2} dx \\
+& = \displaystyle  \left(\frac{1}{-1/2}\right)\frac{1}{2} e^{-x/2} \bigg | _0^2\\
+& = \displaystyle  -e^{-x/2} \bigg | _0^2\\
+& = \displaystyle - e^{-2/2}  + e^{0} \\
+%& = \displaystyle - 0.3678794  + 1 \\
+& = 0.6321206
+\end{align*}
+
+b) What is the probability that a battery lifetime is greater than 400 hours?
+
+*Solution*
+
+In general:
+
+\begin{align*}
+P(X \leq b) & = \int_0^b \frac{1}{2} e^{-x/2} dx \\
+& = \displaystyle  \left(\frac{1}{-1/2}\right)\frac{1}{2} e^{-x/2} \bigg | _0^b\\
+& = \displaystyle  -e^{-x/2} \bigg | _0^2\\
+& = \displaystyle - e^{-b/2}  + e^{0} \\
+& = \displaystyle 1 - e^{-b/2} \\
+\end{align*}
+
+
+\begin{align*}
+P(X > 4) & = 1 - P(X \leq 4) \\
+& = 1 - (1 - e^{-4/2}) \\
+& = 1 - 0.8646647\\
+& = 0.1353353
+\end{align*}
+
+```{r, echo=TRUE}
+1-pexp(4, 0.5)
+```
+
+c) What is the probability that a battery lifetime is less than 200 hours or greater than 400 hours?
+
+*Solution*
+
+\begin{align*}
+P(X \leq 200 \cup X > 400) & =  0.6321206 +  0.1353353\\
+&=0.7674559
+\end{align*}
+
+```{r, echo=TRUE}
+pexp(2, 0.5)+ 1-pexp(4, 0.5)
+```
+
+d) What is the probability that a battery lasts more than 300 hours, given that it has already been in use for more than 200 hours?
+
+*Solution*
+
+\begin{align*}
+P(X  > 3 | X > 2) & =  \displaystyle \frac{P(X > 2, X > 3)}{P(X > 2) }\\
+&= \displaystyle \frac{P(X > 3)}{P(X > 2) }\\
+&= \frac{ e^{-3/2} }{ e^{-2/2} }  \\
+&= 0.6065307 \\
+&= P(X > 1)
+\end{align*}
+
+```{r, echo=TRUE}
+# P(X  > 3 | X > 2)
+(1-pexp(3, 0.5))/(1-pexp(2, 0.5))
+# P(X > 1)
+1 - pexp(1, 0.5)
+```
+
+e) Show that the function $\frac{1}{2} e^{-x/2}, x> 0$ is probability density function? \\
+
+Recall that: $\int e^{f(x)} dx = \frac{e^{f(x)}}{f^{\prime}(x)} + C$.
+
+*Solution*
+
+- $f(x) \geq 0$, for all $x$ ---- 
+Yes for $e^{-x/2} > 0$ for all $x$
+
+- $\displaystyle \int_{\infty}^{\infty} f(x) dx = 1$
+
+\begin{align*}
+ \int_{-\infty}^{\infty} f(x) dx & =  \int_{-\infty}^{0} 0 dx + \int_{0}^{\infty}  \frac{1}{2} e^{-x/2} dx \\
+& =\frac{1/(-\frac{1}{2})}{2}  e^{-x/2}|_{0}^{\infty}  =\frac{-2}{2}  e^{-x/2}|_{0}^{\infty}\\
+& =   -e^{-x/2}|_{0}^{\infty}
+= -e^{-\infty} + e^{0} = 1
+\end{align*}
+
+### Distribution Function
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+The **(cumulative) distribution function** (cdf) of a continuous random variable $X$ is:
+$$
+F(x) = P(X \leq x) = \int_{-\infty}^{x} f(v) \, dv
+$$
+
+Notice that $F^\prime(x) = f(x)$
+
+:::
+
+A distribution function $F(x)$ has the following properties:
+
+- $\lim \limits_{x \rightarrow -\infty} F(x) = 0$
+- $\lim \limits_{x \rightarrow \infty} F(x) = 1$
+- The distribution function is a nondecreasing function; that is, if $a < b$ then $F(a) \leq F(b)$.
+- The distribution function is right-hand continuous; that is, 
+$\lim \limits_{h \rightarrow 0^+} F(x + h) = F(x)$
+
+### Properties of Continuous Random Variables
+
+The definitions of the density function and distribution function lead to the following properties of a \textit{continuous} random variable $X$:
+
+- $P(X > x)  = 1 - F(x), \qquad  x \in \mathbb{R}$
+- $P(X = b)  = P(b \leq X \leq b) = \int_{b}^{b} f(x) dx = 0$
+- $\int_{-\infty}^{\infty} f(x) dx  = 1$
+-
+\begin{align*}
+ P(a \leq X \leq b) &=  
+P(a < X \leq b)  \\ &=  
+P(a \leq X < b) \\&=  
+P(a < X < b) \\&=  
+\int_{a}^{b} f(x) dx \\ & = F(b) - F(a), \qquad  a \leq b
+\end{align*}
+
+The **cumulative distribution function** (cdf) of $X$ is the area under the density function for values less than or equal to $x$. The definition stated above gives the relationship: 
+$$f(x)  = \frac{d}{dx} F(x) = F^\prime (x)$$
+Note that under the definition of the probability density function above, the probability that a continuous random variable $X$ equals a given value $b$ exactly, is $0$, i.e. 
+$$P(X = b) = P(b \leq X \leq b) = \int_{b}^{b} f(x) dx = 0$$
+Therefore the probabilities of a continuous random variable do not change if strict ($<,\, >$) and nonstrict  ($\leq,\, \geq$) inequalities are interchanged. Note: this is **not** the case for discrete random variables.
+
+### Example 4: Cumulative Distribution Function {.unnumbered}
+
+Let $X$ be the lifetime (in hours) of a lightbulb and the pdf of $X$ be:
+
+$$ f(x) = \begin{cases} 
+0 & \text{ if } x < 0\\ 
+0.001e^{-0.001x}  & \text{ if } x \geq 0
+\end{cases}$$
+(Olofsson and Anderson, page 87)
+
+a) Show that $f(x)$ is a pdf
+
+*Solution*
+
+We can assess that this is a pdf by checking that:
+(i) $f(x) \geq 0$ for all $x$  and
+(ii) $\int_{-\infty}^{\infty} f(x) dx = 1$.
+
+The first condition ($f(x) \geq 0$) is evident from the definition of $f(x)$.
+The second condition can be confirmed by integrating $f(x)$ (see notes below).
+
+The cdf can be determined by integrating $f(x)$: 
+
+$$F(x) = 1 - e^{-0.001 x}, x \geq 0$$
+
+To show that $\int_{-\infty}^{\infty} f(x) dx = 1$
+\begin{align*}
+\int_{-\infty}^{\infty} f(x) dx & = \int_{0}^{\infty} 0.001e^{-0.001x}  dx \\
+&=\left[\frac{0.001}{-0.001} e^{-0.001x}  \right]^\infty_0 \\
+&=\left[- e^{-0.001x}  \right]^\infty_0 \\
+%&=- e^{-\infty}  - - e^{0}  \\
+&= 0  - - 1 = 1
+\end{align*}
+
+To find the cdf
+\begin{align*}
+F(x) = \int_{-\infty}^{x} f(t) dt & = \int_{0}^{x} 0.001e^{-0.001t}  dt \\
+%&=\left[\frac{0.001}{-0.001} e^{-0.001t}  \right]^x_0 \\
+&=\left[- e^{-0.001t}  \right]^x_0 \\
+&= - e^{-0.001x}  - - e^{0}  \\
+%&= - e^{-0.001x}  - - 1 \\
+&= 1 - e^{-0.001x}, \qquad x \geq 0
+\end{align*}
+
+The cdf $F(x)$ can then be used to find probabilities.
+
+b) What is the probability that a randomly selected light bulb lasts less than 1000 hours?
+
+*Solution*
+
+\begin{align*}
+P(X < 1000) &= F(1000)\\ 
+&= 1 - e^{(-0.001)(1000)}  \\
+&\approx 0.632 \\
+\end{align*}
+
+c) What is the probability that a randomly selected light bulb lasts less than 100 hours?
+
+*Solution*
+
+\begin{align*}
+P(X < 100) &= F(100)\\ 
+&= 1 - e^{(-0.001)(100)}  \\
+&\approx 0.095 
+\end{align*}
+
+d) What is the probability that a randomly selected light bulb lasts between 100 and 1000 hours?
+
+*Solution*
+
+\begin{align*}
+P(100 < X < 1000) &= F(1000) - F(100)
+= 0.632... - 0.095...  \\
+&\approx 0.537 
+\end{align*}
+
+e) Find a number $x$ such that a lightbulb survives the age $x$ with probability 0.5.
+
+*Solution*
+
+\begin{align*}
+0.5 &= P(X > x) = 1 - F(x)\\
+&= 1 - (1 - e^{-0.001x}) 
+= e^{-0.001x} \\
+\ln(0.5) & -0.001x \\
+x &= \frac{\ln(0.5)}{-0.001} \\
+& = log(0.5)/-0.001 \\
+\approx 693  \text{ hours}
+\end{align*}
+
+## Expected Value and Variance
+
+### Expected Value
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+The **expected value** of a continuous random variable $X$ that has a probability density function $f(x)$ is given by:
+
+$$E[X] = \int_{-\infty}^{\infty} x f(x) dx$$
+
+Special case:
+
+If $X$ is a \textit{non-negative} continuous random variable then 
+
+$$E[X] = \int_0^\infty P(X>x) dx$$
+
+(Scheaffer and Young, 2010, pp202)
+
+:::
+
+### Variance
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+For a random variable $X$ with probability density function $f(x)$, the **variance** of $X$ is given by:
+\begin{align*}
+Var[X] & = E[(X - \mu)^2] \\
+&= \int_{-\infty}^{\infty} (x - \mu)^2 f(x) dx \\
+&= E[X^2] - \mu^2 \\
+\end{align*}
+
+where $\mu=E[X]$.
+
+(Scheaffer and Young, 2010, 202)
+
+:::
+
+Observe that the results for the expected value and variance of a continuous random variable follow from the discrete case, whereby $p(x)$ is replaced by $f(x) dx$ and $\sum$ is replaced by $\int$. 
+
+The expected value of $X$ can be thought of as the average of the random variable and is often called the {mean} of $X$ and is denoted by $\mu$. The variance is often denoted by $\sigma^2$.
+
+### Expected Value of a Function
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+If $X$ is a continuous random variable with probability density function $f(x)$ and 
+$g(X)$ is a real-valued function $X$, then: 
+$$E[g(X)] = \int_{-\infty}^{\infty}  g(x) f(x) dx$$
+
+:::
+
+The theorems relating to the expectation of discrete random variables apply to the continuous case as well:
+
+- If $Y = a + bX$, then $E[Y] = a + b E[X]$ and 
+- If $Y = a + bX$, then $Var[Y] = b^2 Var[X]$.
+
+### Example 5: Expected Value {.unnumbered}
+
+Recall the lightbulb has lifetime $X$ where 
+$$f(x) = 0.001 e^{-0.001x}, x \geq 0$$ and
+$$F(x) =1 - e^{-0.001x}$$
+	
+The expected lifetime of the lightbulb is:
+\begin{align*}
+E[X] & = \int_{-\infty}^{\infty} x f(x) dx =\int_{0}^{\infty} P(X > x) dx \\
+	& = \int_{0}^{\infty} e^{-0.001x} dx \\
+	& = \left[-\frac{ e^{-0.001x}}{0.001}\right]_0^\infty \\
+	& =  0 - - \frac{1}{0.001} =  1000 \\
+\end{align*} 
+	
+### Example 6: Continuous Random Variables {.unnumbered}
+
+Suppose that a random variable X has a probability density function given by
+$$
+f (x) =
+\begin{cases}
+\frac{x^2}{3}, &   -1 < x < 2\\
+0, & \text{otherwise}
+\end{cases}
+$$
+
+(Adapted from Scheaffer and Young, 2010, ex5.3 pg199)
+
+a) Find the distribution function of $X$.
+
+*Solution*
+		
+\begin{align*}
+F(x) &= \displaystyle \int_{-\infty}^{x} f(t) dt \\
+& =  \displaystyle \int_{-1}^{x} \frac{t^2}{3} dt \\
+&=  \displaystyle  \frac{t^3}{9} \large|_{-1}^x\\
+&=  \displaystyle   \frac{x^3 }{9} - \frac{(-1)^3 }{9} \\
+\end{align*}
+		
+$$
+F(x) = 
+\begin{cases}
+0, &  x < -1\\
+\frac{ x^3 + 1}{9}, & -1 \leq x \leq 2\\
+1, & x \geq 2
+\end{cases}
+$$
+
+b) Sketch the distribution function of $X$ by hand and using `R`.
+
+*Solution*
+
+```{r x_cdf_empty, out.width='50%', echo=FALSE, results = "hide", fig.align = 'center'}
+plot(-2:3, seq(0, 1, length.out = 6),  type="n", xlab = "x", ylab = "F(x)")
+grid()
+```
+
+In R:
+
+```{r x_cdf, fig.keep = "none", echo=TRUE}
+x <- seq(-2, 3, 0.1)
+Fx <- numeric(length(x))
+
+x_range1 <- x < -1
+x_range2 <- x >= -1 & x <= 2
+x_range3 <- x > 2
+
+Fx[x_range1] <- 0
+Fx[x_range2] <- (x[x_range2]^3 + 1)/9
+Fx[x_range3] <- 1
+plot(x, Fx, type="l")
+```
+
+```{r x_cdf_plot, out.width='50%', echo=TRUE}
+plot(x, Fx, type="l"); grid() #Solution
+```
+
+c) Find the probability that $-1 < X < 1$.
+
+*Solution*
+
+\begin{align*}
+P(-1 < X < 1) & = F(1) - F(-1)\\
+&= \frac{ 1^3 + 1}{9} -  \frac{(-1)^3 + 1}{9}\\
+&=0.222
+\end{align*}
+
+```{r, echo=TRUE}
+x <- c(-1, 1)
+diff((x^3 + 1)/9)
+```
+				
+d) Find the probability that $1 < X < 3$.
+
+*Solution*
+
+\begin{align*}
+P(1 < X < 3) & = F(3) - F(1)\\
+&= 1 - \frac{ 1^3 + 1}{9}\\
+&=0.778
+\end{align*}
+
+```{r, echo=TRUE}			
+1 - (1^3 + 1)/9
+```
+		
+e) Find the probability that $X \leq 1$ given $X \leq 1.5$.
+
+*Solution*
+
+\begin{align*}
+P(X \leq 1 | X \leq 1.5) & 
+=\frac{P((X \leq 1) \cap (X \leq 1.5))}{P(X \leq 1.5)}\\
+&= \frac{P(X \leq 1)}{P(X \leq 1.5)}\\
+&=  \frac{\frac{ 1^3 + 1}{9}}{\frac{ 1.5^3 + 1}{9}}\\
+&= 0.457
+\end{align*}
+
+```{r, echo=TRUE}		
+((1^3 + 1)/9)/((1.5^3 + 1)/9)
+```
+		

@@ -1,0 +1,970 @@
+# Discrete Distributions {#discretedist}
+
+## Discrete Distribution
+
+There are several fundamental discrete distributions that apply for a large number of practical problems. These include:
+
+- Binomial
+- Geometric
+- Negative Binomial
+- Poisson
+- Hypergeometric 
+
+
+## Binomial Distribution
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+A random variable $X$ has a **binomial distribution** if the following conditions are met:
+
+- The experiment consists of a fixed number $n$  of identical trials
+- Each trial has only two outcomes (i.e. each trial is a Bernoulli trial)
+- The probability of success $p$ is constant from trial to trial
+- The trials are independent
+- $X$ is defined as the number of successes among $n$ trials.
+
+:::
+
+::: {.callout-note appearance="simple"}
+
+## Properties
+
+A **Binomial random variable** $X$ is a the number of successes in $n$ independent and identical Bernoulli trials in which the probability of a success is $p, 0 < p < 1$.
+Then, for $X \sim Bin(n,p)$,
+
+$$
+P(X = k) = \begin{cases}
+\binom{n}{k}p^k (1-p)^{n-k}  &  \text{for } k = 0, \ldots, n\\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+**Mean and Variance**
+
+\textbf{Mean:} $E[X] = np$ 
+
+\textbf{Variance:} $Var[X] = np(1-p)$ 
+
+Notice that: $P(X = k+1) = \left(\frac{p}{1-p}\right)\left( \frac{n-k}{k+1}\right) P(X=k)$
+
+:::
+
+In the probability function for $X$, the term $\binom{n}{k}$ represents the number ways of allocating $k$ successes in $n$ trials:  $\binom{n}{k} = \frac{n!}{k!(n-k!)}$.
+
+```{r}
+n <- 10
+p <- 0.2
+k <- 2
+
+dbinom(k+1, n, p)
+dbinom(k, n, p)*(p/(1-p))*((n-k)/(k+1))
+```
+
+### Example 1: Applications of Binomial Random Variables {.unnumbered}
+
+- Number of defects in a sample of $n$ components
+
+- Number of times a head is obtained in $n$ coin tosses
+
+- Number of rivers out of a sample of $n$ that breached their banks last winter
+
+### Binomial Distribution in R
+
+```{r, echo=TRUE, eval=FALSE}
+
+dbinom(x, n, p)	
+pbinom(x, n, p)	
+qbinom(Fx, n, p)	
+rbinom(numSims, n, p)
+
+```
+
+### Example 2: Binomial Distribution in R {.unnumbered}
+
+Use `R` to find the probability function and distribution function of the binomial distribution with $n=10$ and $p=0.2$ for values of $x = 0, 1, \ldots, 10$: 
+
+*Solution*
+
+```{r}
+
+dbinom(0:10, 10, 0.2)
+
+pbinom(0:10, 10, 0.2)
+
+```
+
+For example: If $X \sim \text{Bin}(10, 0.2)$, then $P(X = 2) = 0.30199$ and 
+$P(X \leq 2) = 0.6778$.
+
+### Example 3: Binomial Distribution {.unnumbered}
+
+An industrial firm supplies 10 manufacturing plants with a certain chemical. The probability that any one firms calls in an order on a given day is 0.2, and this is the same for all 10 plants. (Scheaffer and Young, 2010, example 4.12)
+
+a) Find the probability that on the given day, the number of plants calling in orders is:
+
+- Exactly 3
+
+- At most 3
+
+- At least 3
+
+*Solution*
+
+- Exactly 3:  
+
+$$P(X = 3)  =  \binom{10}{3} 0.2^3 (1-0.2)^{10-3} = 0.201$$
+
+```{r}
+dbinom(3, 10, 0.2)
+choose(10, 3)*0.2^3*0.8^7
+```
+
+- At most 3: 
+
+$$P(X \leq 3)  = \sum_{x=0}^3 \binom{10}{x} 0.2^x (1-0.2)^{10-x} = 0.879$$
+
+```{r}
+dbinom(0:3, 10, 0.2)
+sum(dbinom(0:3, 10, 0.2))
+pbinom(3, 10, 0.2)
+```
+
+- At least 3
+
+\begin{align*}
+P(X \geq 3) & = 1 - P(X \leq 2) \\
+&=1 - \sum_{x=0}^2 \binom{10}{x} 0.2^x (1-0.2)^{10-x}\\
+&= 1- 0.678 = 0.322
+\end{align*}
+
+```{r}
+1-pbinom(2, 10, 0.2)
+```
+
+b) Find the expected value and variance for number of plants calling in an order on a given day.
+
+*Solution*
+
+$$E[X] = np = 10 \times 0.2 = 2$$
+
+$$Var[X]=np(1-p)= 10 \times 0.2 \times 0.8 = 1.6$$
+
+c) Verify your answers using simulation 
+
+*Solution*
+
+```{r bin-sim-ex, results='hide'}
+set.seed(12345)
+numSims <- 10000
+xSim <- rbinom(numSims, 10, 0.2)
+mean(xSim); var(xSim)
+table(xSim == 3)/numSims
+table(xSim <= 3)/numSims
+table(xSim >= 3)/numSims
+```
+
+\newpage
+
+## Geometric Distribution
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+Suppose that a sequence of independent and identical Bernoulli trials, each having probability of success $p$, $0 < p < 1$,  are performed until a success is observed.
+If $X$ denotes the *number of failures* obtained prior to the first success, then $X$ is said to be a **geometric random variable**.
+
+$$
+P(X = x) = \begin{cases}
+p (1-p)^{x}  &  \text{for } x = 0, 1, 2, \ldots ; 0 < p < 1\\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+$$
+F(x) = P(X \leq x) = 1 - (1-p)^{x+1} \qquad \text{for } x = 0, 1, 2, \ldots
+$$
+
+**Mean:** $E[X] = \displaystyle \frac{1-p}{p}$
+**Variance:** $Var[X] = \displaystyle  \frac{1-p}{p^2}$ 
+
+:::
+
+Notice that: $P(X \geq x) = 1 - F(x - 1) = 1 - (1 - (1-p)^{x}) = (1 - p)^{x}$ for $x = 0, 1, 2, \ldots $
+
+### Example 4: Applications of Geometric Random Variables {.unnumbered}
+
+- Number of customers contacted before the first sale is made
+- Number of times a child is exposed to measles before contracting the disease
+- Number of unqualified applicants interviewed prior to the first qualified one
+
+### Geometric Distribution in R
+
+`dgeom(x, p)`
+
+`pgeom(x, p)`	
+
+`qgeom(Fx, p)`
+
+`rgeom(numSims, p)`
+
+### Example 5: Geometric Distribution {.unnumbered}
+
+Use `R` to find the probability of observing 3 failures before the first success, if the probability of success is 0.2.
+
+```{r}
+probSuccess <- 0.2
+numFailures <- 3
+dgeom(numFailures, probSuccess)
+probSuccess*(1-probSuccess)^numFailures
+```
+
+### Example 6: Geometric Distribution {.unnumbered}
+
+A recruiting firm finds that 20\% of the applicants for a particular sales position are fluent in both English and Spanish. Applicants are selected at random from the pool and interviewed sequentially. (Scheaffer and Young, 2010, example 4.15 and 4.16)
+
+a) Find the probability that five applicants are interviewed before finding the first applicant who is fluent in both English and Spanish.
+
+*Solution*
+
+Each applicant either is or is not fluent in English and Spanish, so the interview of an applicant corresponds to a Bernoulli trial. The probability of finding a suitable applicant will remain relatively constant from trial to trial if the pool of applicants is reasonably large. Because applicants will be interviewed until the first one fluent in English and Spanish is found, the geometric distribution is appropriate. 
+
+Let $X$ = the number of unqualified applicants prior to the first qualified one. 
+
+If five unqualified applicants are interviewed before finding the first applicant who is fluent in English and Spanish, we want to find the probability that $X = 5$. Thus,
+
+\begin{align*}
+P(X = 5) &= p(5) \\
+&= 0.2 \times  (0.8)^5\\
+%&= \Sexpr{0.2*(0.8)^5} \\
+& = 0.066
+\end{align*}
+
+```{r}
+0.2*(0.8)^5
+dgeom(5, 0.2)
+```
+
+b) Let $X$ denote the number of unqualified applicants interviewed prior to the first qualified one. Suppose that the first applicant who is fluent in both English and Spanish is offered the position, and the applicant accepts. Suppose each interview costs \$125. Find the expected value and the standard deviation of the total cost of interviewing until the job is filled.
+
+*Solution*
+
+The first successful applicant will be the $(X+1)$ application interviewed.
+$$C = 125 (X + 1) = 125 X + 125$$
+Since $X \sim Geometric(p)$
+
+\begin{align*}
+E[X] & = \left(\frac{(1-p)}{p}\right)\\
+& = \left(\frac{0.8}{0.2}\right)  \\
+Var[X] & =  \left(\frac{(1-p)}{p^2}\right)\\
+& = \left(\frac{0.8}{0.2^2}\right)  
+\end{align*}
+
+\begin{align*}
+E[C] &= 125 E[X] + 125 \\
+&= 125 \left(\frac{(1-p)}{p}\right) + 125\\
+&= 125 \left(\frac{0.8}{0.2}\right) + 125\\
+&= 625
+\end{align*}
+
+\begin{align*}
+Var[C] &= 125^2 Var[X] \\
+&= 125^2 \left(\frac{(1-p)}{p^2}\right)\\
+&= 125^2 \left(\frac{0.8}{0.2^2}\right) \\
+&= 312500 \\
+Std[X] &= \sqrt{125^2 \frac{0.8}{0.2^2}} 
+\end{align*}
+
+```{r}
+125 *(0.8/0.2) + 125
+125^2 *(0.8/0.2^2)
+
+#Verify with simulation
+x <- rgeom(1e6, 0.2)
+cx <- 125*(x+1)
+mean(cx); sd(cx)
+```
+
+c) Find the probability that at least five applicants are interviewed before finding the first applicant who is fluent in both English and Spanish.
+
+*Solution*
+
+$P(X \geq x) =  (1 - p)^{x}$
+
+$P(X \geq 5) = (1 - 0.2)^{5} = 0.8^5 = 0.32768$
+
+```{r}
+0.8^5
+1 - pgeom(4, 0.2)
+```
+
+d) Find the probability that at least four applicants are interviewed before finding the first applicant who is fluent in both English and Spanish.
+
+*Solution*
+
+$P(X \geq x) =  (1 - p)^{x}$
+
+$P(X \geq 4) = (1 - 0.2)^{4} = 0.8^4 = 0.4096$
+
+```{r}
+0.8^4
+1 - pgeom(3, 0.2)
+```
+
+e) Given at least five applicants are interviewed before finding the first applicant who is fluent in both English and Spanish, find the probability that at least 9 unqualified applicants are interviewed before the first qualified one.
+
+*Solution*
+
+\begin{align*}
+P(X \geq 9 | X \geq 5) &= \frac{P((X \geq 9 ) \cap (X \geq 5))}{P(X \geq 5)}\\
+ &= \frac{P(X \geq 9 )}{P(X \geq 5)} \\
+& = \frac{(1 - 0.2)^{9}}{(1 - 0.2)^{5}} \\
+&= 0.8^{9-5} %&=0.8^4 \\
+=0.4096 = P(X \geq 4)
+\end{align*}
+
+```{r}
+0.8^4
+```
+
+### Alternative Parameterization
+
+If instead, $X$ is defined as the \textit{number of trials} until the first success (rather than the \textit{number of failures}), then the $X$ also has a Geometric distribution.
+
+Then for $X \sim \text{Geometric}(p)$
+\begin{equation*}
+P(X = x) = p (1-p)^{x-1}, \qquad x = 1, 2, \ldots; \; 0 \leq p \leq 1
+\end{equation*}
+
+**Mean:** $E[X] = \frac{1}{p}$
+
+**Variance:** $Var[X] = \frac{1-p}{p^2}$
+
+### Example 7: Applications of Alternative Parameterization {.unnumbered}
+
+- Number of coin flips until the first head is observed
+- Number of rolls of a die required to obtain roll a 6
+- Number of balls a cricket player will face before getting out (if each ball is independent and probability of getting out is the same on each ball)
+
+The drawback of this parameterization is that $X$ cannot be equal to 0. Therefore, when the application cannot be explained in terms of Bernoulli trials (as in the following example), we may need to allow for $X=0$.
+
+### Example 8: Alternative Parameterization {.unnumbered}
+
+The number of weeds within a randomly selected square meter of a pasture has been found to be well modelled using the **geometric distribution**. For a given pasture, the number of weeds per square meter averages 0.5. What is the probability that no weeds will be found in a randomly selected square meter of this pasture? (Scheaffer and Young, 2010, example 4.18)
+
+*Solution*
+
+Let $X$ denote the number of weeds in a randomly selected square metre of pasture.
+
+\begin{align*}
+\mbox{Expected weeds per square metre} = 0.5 & = E[X]\\
+&= \frac{1-p}{p}\\
+p &= 2/3\\
+P(X = 0) &= p (1 - p)^0 \\
+&= 2/3
+\end{align*}
+
+\newpage
+
+## Negative Binomial Distribution
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+Suppose that a sequence of independent and identical Bernoulli trials, each having probability of success $p$, $0 \leq p \leq 1$, are performed until $r$ successes are observed.
+
+\vspace{0.5cm}
+
+If $X$ denotes the *number of failures* obtained prior to the $r$th success, then $X$ is said to be a *negative binomial random variable*.
+
+$$
+P(X = x) = \begin{cases}
+\binom{x + r - 1}{r - 1} p^r (1-p)^{x}  &  \text{for } x = 0, 1, \ldots ; 0 \leq p \leq 1\\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+**Mean:** $E[X] = \displaystyle \frac{r(1-p)}{p}$ 
+
+**Variance:** $Var[X] = \displaystyle  \frac{r(1-p)}{p^2}$ 
+
+:::
+
+### Example 9: Applications of Negative Binomial Distribution {.unnumbered}
+
+- Number of customers contacted before the $r$th sale is made
+
+- Number of unqualified applicants interviewed prior to the $r$th qualified one
+
+
+### Negative Binomial Distribution in R
+
+`dnbinom(x, r, p)`
+
+`pnbinom(x, r, p)`
+
+`qnbinom(Fx, r, p)`
+
+`rnbinom(numSims, r, p)`
+
+### Example 10: Negative Binomial Distribution {.unnumbered}
+
+Use `R` to find the probability of observing 3 failures before the second success, if the probability of success is 0.2.
+
+```{r}
+probSuccess <- 0.2
+numSuccesses <- 2
+numFailures <- 3
+dnbinom(numFailures, numSuccesses, probSuccess)
+choose(numFailures+numSuccesses-1, numSuccesses-1)*
+         (probSuccess^numSuccesses)*(1-probSuccess)^numFailures
+```
+
+### Example 11: Negative Binomial Distribution {.unnumbered}
+
+Suppose that 20\% of the applicants for a certain sales position are fluent in English and Spanish. Suppose that four jobs requiring fluency in English and Spanish are open. Find the probability that two unqualified applicants are interviewed before finding the fourth qualified applicant, if the applicants are interviewed sequentially and at random.
+
+*Solution*
+
+Assumption: independent trials with probability of 0.2 of finding a qualified candidate on any one trial.
+
+Let $X$ denote the number of unqualified applicants interviewed prior to interviewing the fourth applicant who is fluent in English and Spanish. $X$ can reasonably be assumed to have a negative binomial distribution, with $X \sim \operatorname{Negative Binomial}(4, 0.2)$.
+
+\begin{align*}
+P(X = 2) &= p(2) \\
+&=\binom{5}{3} (0.2)^4  (0.8)^2 \\
+&= 10 (0.2)^4  (0.8)^2\\
+&=0.01024
+\end{align*}
+
+\textbf{R code: }
+```{r}
+probSuccess <- 0.2
+numFailures <- 2
+numSuccesses  <- 4
+
+dnbinom(numFailures, numSuccesses, probSuccess)
+
+choose(numFailures+numSuccesses-1,  
+  numSuccesses-1)*probSuccess^numSuccesses*
+  (1-probSuccess)^numFailures
+```
+
+### Key Properties of Negative Binomial Distribution
+
+- Extension of the geometric distribution
+
+- Very flexible distribution as it can take different shapes depending on the parameter values.
+
+### Alternative Parameterization
+
+A **negative binomial** random variable is the number of independent and identical Bernoulli trials required to obtain the $r$th success (for an integer $r>1$). The probability of a success is $p$.
+
+
+Then for $X \sim \text{Neg Bin}(r, p)$
+
+\begin{equation*}
+P(X = x) = \binom{x-1}{r-1}p^{r}(1-p)^{x-r}, \qquad x = r, r+1, \ldots
+\end{equation*}
+
+\textbf{Mean:} $E[X] = \frac{r}{p}$
+
+\textbf{Variance:} $Var[X] = \frac{r(1-p)}{p^2}$
+
+### Example 12: Applications of Alternative Parameterization {.unnumbered}
+
+- Number of children born into a family before having 3 daughters
+- Number of rolls of a die required to obtain 10 sixes
+- Number of products to sample before obtaining 5 defective items
+
+## Poisson Distribution
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+A random variable $X$ that takes values $0, 1, 2, \ldots$ is said to be a **Poisson** random variable with parameter $\lambda$, if for some $\lambda > 0$
+
+$$
+P(X = x) = \begin{cases}
+e^{-\lambda} \frac{\lambda^x}{x!}  &  \text{for } x = 0, 1, 2, \ldots \\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+
+**Mean:** $E[X] = \lambda$
+
+**Variance:** $Var[X] = \lambda$
+
+:::
+
+**Poisson** random variables are useful for modelling the occurrence of random phenomena. The random variable $X$ is the number of events observed and $\lambda$ can be interpreted as the rate at which events occur. 
+
+### Example 13: Applications of Poisson Distribution {.unnumbered}
+
+- Number of car accidents at a given intersection per week
+- Number of customers arriving for service at a bank
+- Number of phone calls per minute coming into an office
+- Number of cyclones in the Pacific Ocean per year
+
+### Poisson Distribution in R
+
+`dpois(x, lambda)`
+
+`ppois(x, lambda)`
+
+`qpois(Fx, lambda)`
+
+`rpois(numSims, lambda)`
+
+### Example 14: Poisson Distribution {.unnumbered}
+
+A certain type of event occurs at a rate of 2 per day. What is the probability that on a particular day, 3 events are observed?
+
+*Solution*
+
+```{r}
+lambda <- 2
+numEvents <- 3
+# P(X = 3)
+dpois(numEvents, lambda)
+exp(-lambda)*(lambda^numEvents)/factorial(numEvents)
+```
+
+::: {.callout-note appearance="simple"}
+
+## History
+
+The Poisson distribution is named after Sim\'{e}on Denis Poisson (1781 -- 1840), a French mathematician. In addition to giving his name to this important distribution he made contributions in other areas of science. He developed an expression for the force of gravity (in terms of the distribution of mass within a planet), which has been used for determining details of the Earth's shape, by measuring the paths of orbiting satellites.
+
+\vspace{0.5cm}
+
+\tiny{Borokov, K. (2003),  Elements of Stochastic Modelling, World Scientific, Singapore.}
+
+\vspace{0.5cm}
+
+\tiny{Image from: \url{http://en.wikipedia.org/wiki/Simeon_Denis_Poisson}}
+
+```{r, echo=FALSE, fig.align='center', out.width='25%'}
+knitr::include_graphics("figs/SimeonDPoisson.jpg")
+```
+
+:::
+
+### Example 15: Poisson Distribution {.unnumbered}
+
+During business hours, the number of calls passing through a particular cellular relay system averages five per minute. (Scheaffer and Young, 2010, example 4.22)
+
+a) Find the probability that no call will pass through the relay system during a given minute.
+
+*Solution*
+
+Assumptions:
+
+- calls occur independently of one another
+- calls occur at a constant rate over time $\lambda=5$
+
+
+Let $X$ denote the number of calls passing through the system during a 1 minute period.
+$X \sim \text{Poisson}(5)$
+
+$$P(X=0) = p(x) = \frac{e^{-\lambda}\lambda^0}{0!} = e^{-5} \frac{5^0}{0!} = e^{-5}= 0.007$$
+
+
+b) Find the probability that no call will pass through the relay system during a 2-minute period.
+
+*Solution*
+
+If the mean number of calls in 1 minute is 5, the mean number of calls in 2 minutes is 10. The Poisson model should still provide an adequate presentation of the probabilities. 
+
+Let $X$ denote the number of calls passing through the system during a 2 minute period.
+$X \sim \text{Poisson}(10)$
+
+$$P(X=0) = p(x) = \frac{e^{-\lambda}\lambda^0}{0!} = e^{-10} \frac{10^0}{0!} = e^{-10}=0.00005$$
+
+c) Find the probability that three calls will pass through the relay system during a
+2-minute period.
+
+*Solution*
+
+Let $X$ denote the number of calls passing through the system during a 2 minute period.
+$X \sim \text{Poisson}(10)$
+
+$$P(X=3) = p(x) = \frac{e^{-\lambda}\lambda^3}{3!} = e^{-10} \frac{10^3}{3!} =  0.0076$$
+
+```{r}
+dpois(3, 10)
+```
+
+d) Find the probability that no more than two calls pass through the system in a given minute.
+
+*Solution*
+
+Let $X$ denote the number of calls passing through the system during a 1 minute period.
+$X \sim \text{Poisson}(5)$
+
+\begin{align*}
+P(X \leq 2)&  = \sum_{x=0}^2 \frac{e^{-\lambda}\lambda^x}{x!}   = \frac{e^{-\lambda}\lambda^0}{0!} + \frac{e^{-\lambda}\lambda^1}{1!} 
++ \frac{e^{-\lambda}\lambda^2}{2!} \\
+&= 0.1246
+\end{align*}
+
+````{r}
+ppois(2, 5)
+dpois(0:2, 5)
+sum(dpois(0:2, 5))
+
+x <- 0:2
+lambda <- 5
+exp(-lambda)*(lambda^x)/(factorial(x))
+```
+
+### Example 16: Poisson Distribution {.unnumbered}
+
+Derive the mean of the Poisson distribution
+
+*Solution*
+
+\begin{align*}
+E[X] &= \sum_{x=0}^\infty x P(X=x) 
+ = \sum_{x=0}^\infty x e^{-\lambda}\frac{\lambda^x}{x!} \\
+%& =  \sum_{x=1}^\infty x e^{-\lambda} \frac{\lambda^x}{x!} \\
+& = e^{-\lambda} \sum_{x=1}^\infty x\frac{\lambda^x}{x!} \\
+& = e^{-\lambda} \sum_{x=1}^\infty \frac{\lambda^x}{(x-1)!} \\
+& = \lambda e^{-\lambda} \sum_{x=1}^\infty \frac{\lambda^{x-1}}{(x-1)!} \\
+& = \lambda e^{-\lambda} \left(1 + \lambda + \frac{\lambda^2}{2!} + \frac{\lambda^3}{3!} + \cdots \right) \\
+\intertext{Taylor series expansion of $e^y = 1 + y + \frac{y^2}{2!} + \frac{y^3}{3!} + \cdots$}
+& = \lambda e^{-\lambda} e^{\lambda} \\
+& = \lambda
+\end{align*}
+
+### Properties of Poisson Distribution
+
+### Example 17: Properties of Poisson Distribution {.unnumbered}
+
+Suppose we are interested in the number of accidents at a particular intersection over the period of a week. We could split this interval into a series of $n$ subintervals such that:
+
+\begin{align*}
+P(\text{one accident in a subinterval}) &= p \\
+P(\text{no accidents in a subinterval}) &= 1-p 
+\end{align*}
+
+```{r, echo=FALSE, fig.align='center', out.width='100%'}
+knitr::include_graphics("figs/carcrash_timeline.pdf")
+```
+
+\newpage
+If we assume:
+
+- that the probability $p$ is the same across all subintervals and 
+- that the subintervals are small enough that the probability that one contains more than one accident is 0
+- the occurrence of accidents is independent from subinterval to subinterval
+
+Then, the number of subintervals containing accidents, and thus the number accidents in a week is a binomial random variable.  
+
+However, in this scenario, we do not know $n$ or $p$, but we would expect that as $n$ increases, $p$ would decrease.
+
+**Poisson Approximation to the Binomial Distribution**
+
+Some probability distributions, like the Poisson, come about by limiting the arguments applied to other distributions. Let's examine what happens to the binomial distribution as $n$ increases and $p$ decreases.
+
+For large $n$, the binomial distribution can be approximated by the Poisson distribution. This suggests that Poisson distribution would be a good model when there is a large number
+of independent trials each with the same probability.
+
+## Hypergeometric Distribution
+ 
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+Suppose that a lot consists of $N$ items, of which $k$ are of one type (\textit{success}) and $N-k$ are of another type (\textit{failures}). Suppose that $n$ items are sampled randomly and sequentially from the lot, without replacement. Let $X$ denote the number of successes amongst the $n$ sampled items, the $X$ is said to have a **hypergeometric distribution**.
+\hspace{-0.25cm}
+$$
+P(X = x) = \begin{cases}
+\displaystyle
+\frac{\binom{k}{x} \binom{N-k}{n-x}}{\binom{N}{n}}
+  & \parbox{0.6\textwidth}{\text{for } 
+%0 \leq x \leq k \leq N ; \text{ and } 0 \leq x \leq n \leq N
+$x = 0, 1, \ldots , k;$ \text{ with } $\binom{b}{a}=0 \text{ if } a > b$}\\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+\textbf{Mean:} $E[X] = \displaystyle n \left (\frac{k}{N} \right)$
+
+\textbf{Variance:} $Var[X] = \displaystyle n \left (\frac{k}{N} \right) 
+\left (1 - \frac{k}{N} \right) \left (\frac{N-n}{N-1} \right)$ 
+
+:::
+
+The pmf of the hypergeometric distribution can be understood intuitively as follows.
+
+For $x = 0, 1, 2, \ldots , k ; \text{ with } \binom{b}{a}=0 \text{ if } a > b$:
+
+\begin{align*}
+P(X = x) &= \displaystyle
+\frac{\binom{k}{x} \binom{N-k}{n-x}}{\binom{N}{n}}\\
+&= \frac{(\text{choose $x$ successes from $k$)}
+\times \text{  (choose $n-x$ failures from $N-k$)}
+}{\text{(choose $n$ items from $N$)}}
+\end{align*}
+
+### Example 18: Applications of Hypergeometric Distribution {.unnumbered}
+
+- Sampling from small populations without replacement
+- Discrimination - e.g. probability of employing 2 male candidates from a pool of 5 males and 3 females
+- Quality Control - e.g. Probability of observing defects from a pool of objects in which the total number of defects is known
+
+### Hypergeometric Distribution in R
+
+`dhyper(x, k, N-k, n)`
+
+`phyper(x, k, N-k, n)`
+
+`qhyper(x, k, N-k, n)`
+
+`rhyper(numSims, k, N-k, n)`
+
+\texttt{x} = number of successes
+
+\texttt{k} = total number of successes
+
+\texttt{N} = total number of items
+
+\texttt{N - k} = total number of failures
+
+\texttt{n} = number of items selected
+
+### Example 19: Hypergeometric Distribution {.unnumbered}
+
+Two positions are open in a company. Ten men and five women have applied for a job at this company, and all are equally qualified for either position. The manager randomly hires two people from the applicant pool to fill the positions. What is the probability that a man and a woman were chosen? (Scheaffer and Young, 2010, example 4.25)
+
+*Solution*
+
+If the selections are made at random, and if $X$ denotes the number of men selected, then the hypergeometric distribution would provide a good model for the behaviour of $X$. 
+
+$ N = 15, k = 10, n = 2, $ and $x = 1$
+
+$$
+P(X = 1) = p(1) = \frac{\binom{10}{1} \binom{5}{1}}{\binom{15}{2}} = \frac{10}{21}
+$$
+
+in R:
+
+```{r}
+totalNumSuccesses  <- 10 #k
+totalNumFailures <- 5 #N-k
+numSuccesses <- 1 #x
+numTrials <- 2 #n
+
+dhyper(numSuccesses, totalNumSuccesses, totalNumFailures, numTrials)
+
+10/21
+
+choose(totalNumSuccesses, numSuccesses)*
+choose(totalNumFailures, numTrials-numSuccesses)/
+choose(totalNumSuccesses+totalNumFailures, numTrials)
+```
+
+### Example 20: Hypergeometric Distribution {.unnumbered}
+
+An auditor checking the accounting practices of a firm samples 4 accounts from an accounts receivable list of 12. Find the probability that the auditor sees at least one past-due account under the following conditions: (Scheaffer and Young, 2010, example 4.111)
+
+a) There are 2 such accounts among the 12.
+
+*Solution*
+
+Let $X$ denote the number of past-due accounts in a sample of 4 from 12, in which 2 of 12 are past-due.
+
+$N = 12, n = 4, k = 2$
+
+\begin{align*}
+P(X \geq 1) & = 1 - P(X = 0) \\
+&= 1 - \frac{\binom{2}{0}\binom{12-2}{4-0}}{\binom{12}{4}}\\
+&= 1-dhyper(0, 2, 10, 4)
+\end{align*}
+
+```{r}
+1-dhyper(0, 2, 10, 4)
+1-choose(2,0)*choose(12-2, 4-0)/choose(12, 4)
+```
+
+
+b) There are 6 such accounts among the 12.
+
+*Solution*
+
+$N = 12, n = 4, k =6$
+
+\begin{align*}
+P(X \geq 1) & = 1 - P(X = 0) 
+= 1 - \frac{\binom{6}{0}\binom{12-6}{4-0}}{\binom{12}{4}}
+= 1-dhyper(0, 6, 6, 4)
+\end{align*}
+
+```{r}
+1-dhyper(0, 6, 6, 4)
+1-choose(6,0)*choose(12-6, 4-0)/choose(12, 4)
+```
+
+c) There are 8 such accounts among the 12.
+
+*Solution*
+
+$N = 12, n = 4, k = 8$
+
+\begin{align*}
+P(X \geq 1) & = 1 - P(X = 0) 
+= 1 - \frac{\binom{8}{0}\binom{12-8}{4-0}}{\binom{12}{4}}
+= 1-dhyper(0, 8, 4, 4)
+\end{align*}
+
+```{r}
+1-dhyper(0, 8, 4, 4)
+1-choose(8,0)*choose(12-8, 4-0)/choose(12, 4)
+```
+
+### Distributions in R: Summary^[http://cran.r-project.org/doc/manuals/R-intro.html#Probability-distributions]
+
+\texttt{d} = density/mass function
+
+\texttt{p} = distribution function
+
+\texttt{q} = quantile function
+
+\texttt{r} = random number
+
+### Key Discrete Distributions
+
+\texttt{dbinom} --- Binomial (including Bernoulli) distribution 
+
+\texttt{dgeom} ---  Geometric distribution  
+
+\texttt{dnbinom} ---Negative binomial distribution  
+
+\texttt{dpois} ---  Poisson distribution  
+
+\texttt{dhyper} ---  Hypergeometric distribution  
+
+
+### Other useful functions
+
+\noindent\begin{tabular}{ p{0.35\textwidth}   p{0.65\textwidth} }  
+\verb|factorial(x) | & x! \\  
+\verb|sample(x, k,| \verb| replace=FALSE)| & Takes a sample of size $k$ from set $x$ without replacement \\  
+\verb|choose(n,k)| &   Binomial coefficient of $\binom{n}{k} = \frac{n!}{(n-k)!}{k!}$\\  
+\verb|replicate(n, x)| &  Repeats expression \texttt{x} $n$ times \\  
+\verb|combn(x, m)| &  Returns the combinations of the elements of $x$ of size $m$\\  
+\end{tabular}  
+
+
+## Simulation
+
+- Widely used technique
+
+- Often used to analyze ``what-if'' type questions
+
+- Useful when problems cannot be solved analytically 
+
+  * due to complexity of problem
+  
+  * because to do so would require simplifying assumptions
+
+- Results influenced by: 
+
+  * number of runs
+  
+  * starting conditions
+  
+  * length of each simulation run
+  
+  * accuracy of the model (compared with system being modelled)
+  
+- Use \emph{pseudorandom numbers} generated by a computer
+
+The random variables $X_1, X_2, \ldots, X_n$ are a **random sample** if they are independent and identically distributed (iid).
+
+The distribution resulting from the random variables in a random sample is called the **empirical probability distribution**.  
+
+This function will differ each time a new sample is taken. When we simulate a random discrete variable, we are collecting a random sample of values from that distribution. As the size of the sample increases the empirical probability distribution will converge to the theoretical distribution. As $n \rightarrow \infty$, empirical probability distribution $\rightarrow$ theoretical distribution.
+
+### Simulating a Discrete Distribution
+
+1. \textbf{Use an in-built distribution}, e.g. \texttt{rbinom} or \texttt{sample}
+
+```{r}
+set.seed(12345)
+dbinom(0:5, 5, 0.3)
+table(rbinom(10000, 5, 0.3))
+```
+
+2. \textbf{Write your own simulation} using uniform random numbers between $0$ and $1$.
+
+  - The **unit interval** is the range of values from $0$ to $1$.
+  
+  - A **unit random number** is a number selected at random from this interval.
+  
+  - To simulate a discrete random variable $X$, the values of $X$ are assigned to intervals of the unit interval, proportional to their probability.
+  
+  - In `R` \texttt{runif} --- Uniform random numbers
+  
+  - Use this method when an in-built distribution is not available.
+
+
+### Example 21: Simulation {.unnumbered}
+
+Let $X$ be a random variable with the following probability mass function:
+
+\begin{center}
+\begin{tabular}{|l|rrrrr|}\hline
+$x$ & 10 & 20 & 30 & 40 & 50 \\ \hline
+$p(x)$ & 0.2 & 0.3 & 0.1 & 0.3 & 0.1 \\
+$F(x)$ & 0.2 & 0.5 & 0.6 & 0.9 & 1 \\\hline
+\end{tabular} 
+\end{center}
+\bigskip
+
+To generate a random observation from this distribution:
+
+1. Generate unit random number, $u$.
+
+2. If $0 \leq u < 0.2$, then $X$ = 10.
+
+3. Else if $0.2 \leq u < 0.5$, then $X$ = 20 etc.
+
+```{r, echo=FALSE, fig.align='center', out.width='100%'}
+knitr::include_graphics("figs/simulationExample.jpg")
+```
+
+\newpage
+
+**R code for simulation**
+
+```{r}
+set.seed(9293)
+x <- seq(10, 50, 10)
+px <- c(0.2, 0.3, 0.1, 0.3, 0.1)
+Fx <- cumsum(px)
+Fx
+
+numSims <- 10000
+u.all <- runif(numSims)
+results <- data.frame(u=u.all, x1=NA, x2=NA)
+
+# Method 1
+for(i in 1:numSims){
+   results[i, "x1"] <- x[min(which(u.all[i] < Fx))]
+}
+table(results[,"x1"])
+
+# Method 2
+results$x2 <- sapply(u.all, function(u)x[min(which(u < Fx))])
+table(results[,"x2"])
+
+head(results)
+```
+

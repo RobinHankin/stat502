@@ -1,0 +1,538 @@
+# Discrete Random Variables {#discrete}
+
+## Random Variables
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+A **random variable** is a real-valued function whose domain is a sample space. (Sheaffer and Young, 2010, pp 94)
+
+:::
+
+In other words, a random variable is a function that assigns a real number to every member of the sample space.
+
+The value $X=x$ is the event that the random variable $X$ takes the value $x$.
+
+It is convention that:
+
+- upper case -- a random variable $X, Y, Z$
+- lower case -- the value that the random variable takes $x, y, z$
+
+A random variable, $X$ may be **continuous** or **discrete** (or a mixture of the two).
+
+- Discrete random variable  --- $X$ has a finite or countably infinite range of values.
+
+- Continuous random variable  --- $X$ is continuous and takes values over a real interval.
+
+::: {.callout-note appearance="simple"}
+
+## Note
+
+Discrete and continuous random variables have different properties so they are usually discussed separately. 
+
+:::
+
+**Examples of discrete random variables**
+	
+- Number of defects in $10$ products, $X \in \{0, 1, 2, ..., 10\}$.
+- Number of customers served in a hour, $X \in \{0, 1, 2, \ldots\}$
+- Number of days that river level is above 3m,  $X \in \{0, 1, 2, \ldots\}$
+- Number of heads minus number of tails in 3 tosses of a coin, $X \in \{ -1, -3, 1, 3\}$
+
+**Examples of continuous random variables**
+
+- Time (in minutes) until the arrival of the next bus as at a given bus stop, $X \in \mathbb{R}_+$
+- Height of a randomly selected university student,  $X \in \mathbb{R}_+$
+- Difference between actual weight of chocolate bar and advertised weight, $X \in \mathbb{R}$
+- Time a customer waits to get through to a call centre operator, $X \in \mathbb{R}_+$
+- Temperature (Celsius) at a randomly selected geographical location, $X \in \mathbb{R}$
+
+	
+## Discrete Random Variables
+
+### Probability Mass Function
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+A random variable $X$ is said to be a **discrete random variable** if it has a finite or countably infinite range of values.
+
+:::
+
+
+::: {.callout-note appearance="simple"}
+
+## Properties
+
+The **probability mass function** (pmf or PMF) or probability function $p(x)$, of a discrete random variable $X$ assigns a probability to each value  $x$ of $X$ such that:
+
+i) $P(X = x) = p(x) \geq 0$
+
+ii) $\sum \limits_x p(x) = 1$
+
+:::
+
+### Example 1: Probability Mass Function {.unnumbered}
+
+Two coins are flipped. Let $X$ denote the number of heads observed. Find and graph the pmf of $X$.
+
+*Solution*
+
+| $x$ | 0 | 1 | 2 | Total |
+|-----|---|---|---|-------|
+|$p(x)$ | 0.25 | 0.5 | 0.25 | 1 |
+
+```{r twocoins-pmf, out.width='60%', echo=TRUE}
+px <- c(0.25, 0.5, 0.25)
+barplot(px, names.arg=0:2, ylim=c(0,1), xlab="x", ylab="p(x)", 
+        cex.axis=1.5, cex.names=1.5, cex.lab = 1.5, axis.lty = 1)
+```
+
+### Example 2: Probability Mass Function {.unnumbered}
+
+A local video store periodically puts its used movies in a bin and offers to sell them to customers at a reduced price. Twelve copies of a popular movie have just been added to the bin, but three of these are defective. A customer randomly selects two of the copies for gifts. Let $X$ be the number of defective movies the customer purchased. Find and graph the probability function for $X$.
+
+*Solution*
+
+Let $D_i$ denote the event that the $i$th movie chosen is defective, $i=1, 2$.
+
+\begin{align*}
+P(D_1) &= 3/12 = 1/4\\
+P(\bar{D_1}) & = 9/12 = 3/4 \\
+P(D_2|D_1) & = 2/11\\
+P(D_2|\bar{D_1}) & = 3/11
+\end{align*}
+
+0 defectives:
+$P(\bar{D_1}, \bar{D_2}) = (3/4)\times(8/11) = 6/11 = 0.545455$
+
+1 defectives:
+$P(\bar{D_1}, D_2) + P(D_1, \bar{D_2}) = (3/4)\times(3/11) + (1/4)\times(9/11) = 0.409091$
+
+2 defectives:
+$P(D_1, D_2) = (1/4)\times(2/11) = 0.045455$
+
+\begin{tabular}{|l|lll|l|}\hline
+$x$ & 0 & 1 & 2 & Total \\\hline
+$p(x)$ &72/132 & 54/132 & 6/132 & 1 \\\hline
+\end{tabular}
+
+
+```{r videostore_pmf, out.width='45%', eval=TRUE}
+(px <- c((9/12)*(8/11), (9/12)*(3/11) + (3/12)*(9/11),  (3/12)*(2/11)))
+barplot(px, names.arg=0:2, ylim=c(0,1), xlab="x", ylab="p(x)")
+MASS::fractions(px)
+```
+
+### Probability Distribution Function
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+The **(cumulative) distribution function** (cdf) of $X$ is:
+
+$$F(b) = P(X \leq b)$$
+If $X$ is discrete, then
+
+$$F(b) = \sum_{x = -\infty}^b p(x)$$
+
+where $p(x)$ is the probability function.
+
+:::
+
+::: {.callout-note appearance="simple"}
+
+## Properties
+
+A distribution function $F(x)$ has the following properties:
+
+i) $\lim \limits_{x \rightarrow -\infty} F(x) = 0$
+
+ii) $\lim \limits_{x \rightarrow \infty} F(x) = 1$
+
+iii) The distribution function is a non-decreasing function; that is, if $a < b$ then $F(a) \leq F(b)$.
+
+iv) The distribution function is right-hand continuous; that is, $\lim \limits_{h \rightarrow 0^+} F(x + h) = F(x)$
+
+:::
+
+### Example 3: Distribution Function {.unnumbered}
+
+Two coins are flipped. Let $X$ denote the number of heads observed. Find the distribution function (cdf) of $X$.
+
+*Solution*
+
+$$
+F(x) = \begin{cases}
+0 , & x < 0 \\
+0.25 , & 0 \leq x < 1 \\
+0.75 , &  1 \leq x  < 2 \\
+1 , & x \geq 2 \\
+\end{cases}
+$$
+
+### Example 4: Distribution Function {.unnumbered}
+
+Recall the video store example.
+
+a) Compute the distribution function $F(x)$.
+
+*Solution*
+
+$$
+F(x) = \begin{cases}
+0 , & x < 0 \\
+0.545 , & 0 \leq x < 1 \\
+0.955 , &  1 \leq x  < 2 \\
+1 , & x \geq 2 \\
+\end{cases}
+$$
+
+
+b) Graph the distribution function $F(x)$.
+
+*Solution*
+ 
+```{r videostore_cdf, out.width='60%'}
+px
+cumsum(px)
+MASS::fractions(cumsum(px))
+```
+
+```{r videostore_cdf_plot, out.width='80%'}
+sfun0  <- stepfun(0:2, c(0, cumsum(px)), f = 0)
+plot(sfun0, verticals=FALSE, xlim=c(0, 3),  pch = 19, main=NULL,
+     ylab="F(x)")
+```
+
+## Expected Value and Variance
+
+### Expected Value
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+A random variable $X$ with probability mass function $p(x)$ has an **expected value**, $E[X]$, whereby:
+
+$$E[X] = \sum_x x p(x) $$
+
+The expected value of $X$ can be thought of as the average of the random variable and is often called the **mean** of $X$ and is denoted by $\mu$.
+
+:::
+
+### Example 5: Expected Value {.unnumbered}
+
+Two coins are flipped. Let $X$ denote the number of heads observed. Find the expected value $E[X]$.
+
+*Solution*
+
+\[E[X] = (0\times 0.25) + (1 \times 0.5) + (2 \times 0.25) = 1\]
+
+### Example 6: Expected Value {.unnumbered}
+
+Compute the expected value of $X$ for the video store example, i.e. compute the expected number of defective movies bought.
+
+*Solution*
+
+$$E[X] = (0\times 0.545) + (1 \times 0.409) + (2 \times 0.045) = 0.5$$
+
+In R:
+
+```{r}
+x <- 0:2
+MASS::fractions(px)
+EX <- sum(x*px)
+EX
+``` 
+
+### Expected Value of a Function
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+If $X$ is a discrete random variable with probability function $p(x)$ and $g(X)$ is a real-valued function $X$, then: 
+
+$$E[g(X)] = \sum_x g(x) p(x)$$
+
+:::
+
+### Example 7: Expected Value of a Function {.unnumbered}
+
+Suppose you decided to play the following game with a friend. Two coins are flipped and the number of heads is observed. Let $X$ denote the number of heads. For each of the following games, compute your expected winnings and determine if the game is fair (i.e. has an expected value of 0).
+
+a) If no heads are observed, you must pay your friend \$1. If one head is observed, your friend pays you \$1 and if two heads are observed, your friend pays you \$2. 
+
+*Solution*
+
+Here we are interested in a function of $X$, not $X$ itself.
+
+\begin{tabular}{|l|lll|l|}\hline
+$x$ & 0 & 1 & 2 & Total \\\hline
+$p(x)$ & 0.25 & 0.5 & 0.25 & 1 \\\hline
+$g(x)$  & -1 & 1 & 2 & \\ \hline
+$h(x)$  & -4 & 1 & 2 & \\ \hline
+\end{tabular}
+
+```{r}
+sum(c(-1, 1, 2)*c(0.25, 0.5, 0.25))
+```
+
+$E[g(X)] = -1 \times 0.25 + 1 \times 0.5 + 2 \times 0.25 = 0.75$
+
+This game is not fair as the expected winnings are not 0.
+
+b) If no heads are observed, you must pay your friend \$4. If one head is observed, your friend pays you \$1 and if two heads are observed, your friend pays you \$2. 
+
+*Solution*
+
+Here we are interested in a function of $X$, not $X$ itself.
+
+\begin{tabular}{|l|lll|l|}\hline
+$x$ & 0 & 1 & 2 & Total \\\hline
+$p(x)$ & 0.25 & 0.5 & 0.25 & 1 \\\hline
+$g(x)$  & -1 & 1 & 2 & \\ \hline
+$h(x)$  & -4 & 1 & 2 & \\ \hline
+\end{tabular}
+
+```{r}
+sum(c(-1, 1, 2)*c(0.25, 0.5, 0.25))
+```
+
+$E[g(X)] = -1 \times 0.25 + 1 \times 0.5 + 2 \times 0.25 = 0.75$
+
+This game is not fair as the expected winnings are not 0.
+
+```{r}
+sum(c(-4, 1, 2)*c(0.25, 0.5, 0.25))
+```
+
+$E[h(X)] = -4 \times 0.25 + 1 \times 0.5 + 2 \times 0.25 = 0$
+
+This game is fair as the expected winnings are 0.
+
+### Variance and Standard Deviation
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+The **variance** of a random variable $X$, with expected value $\mu$, is denoted by $Var[X]$ and is given by:
+
+$$Var[X] = E[(X - \mu)^2] = E[X^2] - \mu^2$$
+
+The variance is sometime denoted by $\sigma^2$.
+
+:::
+
+
+::: {.callout-note appearance="simple"}
+
+## Definition
+
+The standard deviation of a random variable $X$ is the squareroot of the variance and is given by:
+
+$$Std(X) = \sigma = \sqrt{\sigma^2} = \sqrt{ E[(X - \mu)^2]}$$
+
+:::
+
+The standard deviation can be thought of as a *typical* deviation between an observed outcome and the expected value.
+
+### Example 8: Variance and Standard Deviation {.unnumbered}
+
+Two coins are flipped. Let $X$ denote the number of heads observed. Find the variance and standard deviation of $X$.
+
+*Solution*
+
+$E[X]=\mu=1$
+
+$$Var[X] = (0-1)^2 \times 0.25 + (1-1)^2 \times 0.5 + (2-1)^2 \times 0.25 =  0.5 $$
+
+$$Std[X] = \sqrt{Var[X]} = \sqrt{0.5} = 0.7071068 $$
+
+### Example 9: Variance and Standard Deviation {.unnumbered}
+
+Compute the variance and standard deviation of $X$ for the video store example.
+
+*Solution*
+
+$$Var[X] = (0-0.5)^2 \times 0.545 + (1-0.5)^2 \times 0.409 + (2-0.5)^2 \times 0.045 = 0.341 $$
+
+$$Std[X] = \sqrt{Var[X]} =\sqrt{ 0.341} = 0.584 $$
+
+```{r}
+px
+x
+EX
+
+#Variance
+VarX <- sum(px*(x - EX)^2)
+VarX 
+sum(px*x^2) - EX^2
+
+#Standard Deviation
+sqrt(VarX)
+```
+
+### Example 10: Variance and Standard Deviation {.unnumbered}
+	
+Verify that $Var[X] = E[(X - \mu)^2]$ does in fact equal $E[X^2] - \mu^2$.
+
+*Solution*
+
+\begin{align*}
+Var[X] &= E[(X - \mu)^2]\\
+&= E[X^2 - 2 X \mu + \mu^2] \\
+&= E[X^2] - 2\mu E[X] + \mu^2\\
+&= E[X^2] - 2\mu \mu + \mu^2\\
+&= E[X^2] - 2\mu^2 + \mu^2\\
+&= E[X^2] -  \mu^2 
+\end{align*}
+
+### Example 11: Production Line {.unnumbered}
+
+A manufacturing company in concerned about the number of defects on its production lines. 
+
+Let:
+
+- Let $X$ denote the number of defects per hour on production line 1 
+- Let $Y$ denote the number of defects per hour on production line 2 
+
+a) Calculate the distribution function of $X$ .
+
+\begin{tabular}{|l|p{0.18 \textwidth}p{0.18 \textwidth} p{0.18 \textwidth}|}\hline
+$x$ 					& 0 	& 1 	& 2  	\\\hline 
+$p(x)$ 					& 0.5 	& 0.3 	&  0.2  \\\hline 
+$F(x) = P(X \leq x)$ 	& 	 	&   	&  		\\[1ex]  \hline
+\end{tabular}
+
+*Solution*
+
+\begin{tabular}{|l|p{0.18 \textwidth}p{0.18 \textwidth} p{0.18 \textwidth}|}\hline
+$x$ 					& 0 	& 1 	& 2  	\\\hline 
+$p(x)$ 					& 0.5 	& 0.3 	&  0.2  \\\hline 
+$F(x) = P(X \leq x)$ 	& \textbf{0.5}  & \textbf{0.8}  	&  \textbf{1}	\\[1ex]  \hline
+\end{tabular}
+
+b) Calculate the distribution function of $Y$.
+
+\begin{tabular}{|l|p{0.18 \textwidth}p{0.18 \textwidth} p{0.18 \textwidth}|}\hline
+$y$ 					& 0 	& 1 	&   	\\\hline 
+$p(y)$ 					& 0.9 	& 0.1	&       \\\hline 
+$F(y) = P(Y \leq y)$ 	& 	 	&   	&  		\\[1ex]  \hline
+\end{tabular}
+
+*Solution*
+
+\begin{tabular}{|l|p{0.18 \textwidth}p{0.18 \textwidth} p{0.18 \textwidth}|}\hline
+$y$ 					& 0 	& 1 	&   	\\\hline 
+$p(y)$ 					& 0.9 	& 0.1	&       \\\hline 
+$F(y) = P(Y \leq y)$ 	&\textbf{0.9}  	& 	\textbf{1} 	&  		\\[1ex]  \hline
+\end{tabular}
+
+c) The production of defects costs the company money. The financial director has authorised the repair of one production line. Which production line do you think should be repaired? Justify your answer.
+
+*Solution*
+
+The probability of no defects under machine $Y$ is higher than machine $X$. Machine $X$ seems to be performing worse so should be repaired.
+
+d) Find the expected value and variance of $X$ and $Y$.
+
+*Solution*
+
+- $E[X]$
+
+\begin{align*}
+E[X] &= \sum_x x p(x) \\
+&= (0)(0.5) + (1)(0.3) + (2)(0.2) \\
+&=  0 + 0.3 + 0.4 \\
+&= 0.7 
+\end{align*}
+
+- $Var[X]$
+
+\begin{align*}
+Var[X] &= E[(X - E[X])^2] \\
+&= \sum_x ((x - E[X])^2) p(x) \\
+&= (0 - 0.7)^2(0.5) + (1-0.7)^2(0.3) + (2-0.7)^2(0.2) \\
+&= 0.61
+\end{align*}
+
+- $E[Y]$
+
+\begin{align*}
+E[Y] &= \sum_y y p(y) \\
+&= (0)(0.9) + (1)(0.1)  \\
+&=  0 + 0.1 \\
+&= 0.1 
+\end{align*}
+
+-  $Var[Y]$
+
+\begin{align*}
+Var[Y] &= E[(Y - E[Y])^2] \\
+&= \sum_y ((y - E[Y])^2) p(y) \\
+&= (0 - 0.1)^2(0.9) + (1-0.1)^2(0.1)  \\
+&= 0.09
+\end{align*}
+
+e) Suppose that to repair a defect created by machine $X$ costs \$5. Find the expected value and variance of the cost of repairing defects per hour.
+
+*Solution*
+
+$X$ is the number of defects per hour.Let $C(x)$ denote the cost of $x$ per hour.
+
+\begin{align*}
+E[C(X)] &= 5 \times E[X] =3.5 \\
+Var[C(X)] &= 5^2 \times Var[X] 
+= 5^2 \times 0.61 
+=15.25 
+\;\; \mbox{or}\\
+E[C(X)] &= \sum_{x=0}^2 5x P(X=x) \\
+&= (0)(0.5) + (5)(0.3) + (10)(0.2) 
+= 3.5\\
+Var[C(X)] &= \sum_{x=0}^2 (5x - E[C(X)])^2 P(X=x) \\
+&=(0 - 3.5)^2(0.5) + (5 - 3.5)^2(0.3) + (10 - 3.5)^2(0.2)
+= 15.25 \\
+Var[C(X)] &= E[C(X)^2] - (E[C(X)])^2 \\
+&= \sum_{x=0}^2 (5x)^2 P(X=x) - 3.5^2 \\
+&=(0)^2(0.5) + (5)^2(0.3) + (10)^2(0.2) - 3.5^2
+= 15.25
+\end{align*}
+
+```{r}
+#Define probabilities, x values and cost
+p_defect <- c(0.5, 0.3, 0.2)
+x_defect <- 0:2
+cost <- 5
+    
+#Mean and variance of number of defects    
+EX_defect <- sum(p_defect*x_defect)
+Var_defect <- sum(p_defect*x_defect^2) - EX_defect^2
+
+#Mean and variance of cost of defects    
+EX_defect*cost; Var_defect*cost^2
+```
+
+f) Verify your answer to the previous question by simulating this scenario in `R`.
+
+*Solution*
+
+```{r}
+p_defect <- c(0.5, 0.3, 0.2)
+x_defect <- 0:2
+cost <- 5
+
+num_sims <- 1e5
+trials <- replicate(num_sims, 
+                    sample(x_defect, 1, prob= p_defect))
+(mean_cost_trials <- mean(trials*cost))
+(var_cost_trials <- var(trials*cost))
+```
+
+
+
