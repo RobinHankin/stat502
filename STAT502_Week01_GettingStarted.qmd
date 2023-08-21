@@ -1,4 +1,4 @@
-# Data Visualisation and Summary Statistics {#introduction}
+ Data Visualisation and Summary Statistics {#introduction}
 
 ## The R programming language
 
@@ -38,6 +38,12 @@ There are two main branches of statistics:
 * _Inferential Statistics_: drawing of conclusions from data
 
 The first part of STAT502 will discuss descriptive statistics, probability and distributions, and the second will discuss inferential statistics.
+
+## Resources
+
+there are many, many resources for learning statistics with R
+available online.  Reference Scheaffer and Young [@SY] is suitable for
+this course, available online.
 
 ## Data
 
