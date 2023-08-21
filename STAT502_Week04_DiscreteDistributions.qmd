@@ -613,7 +613,7 @@ P(X \leq 2)&  = \sum_{x=0}^2 \frac{e^{-\lambda}\lambda^x}{x!}   = \frac{e^{-\lam
 &= 0.1246
 \end{align*}
 
-````{r}
+```{r}
 ppois(2, 5)
 dpois(0:2, 5)
 sum(dpois(0:2, 5))
