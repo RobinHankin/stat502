@@ -1,12 +1,4 @@
 # References {.unnumbered}
 
 ::: {#refs}
-@book{SY,
-author = {Scheaffer, R.L. and Young, L.J.},
-title = {Introduction to Probability and its Applications},
-edition = {3},
-publisher = {Brooks/Cole},
-address = {Boston MA},
-year = {2010}
-}
 :::
